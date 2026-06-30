@@ -37,33 +37,48 @@
     </form>
 </div>
 
+<div id="confirmToast" class="toast" role="dialog" aria-live="polite" aria-modal="true">
+    <p id="toastMessage"></p>
+    <div class="toast-actions">
+        <button type="button" id="toastCancel" class="toast-btn cancel">Cancelar</button>
+        <button type="button" id="toastConfirm" class="toast-btn confirm">Prosseguir</button>
+    </div>
+</div>
+
 <div class="footer">
     Versão beta 3.0 - Powered by @fabiodfilho
 </div>
 
 <script>
-    document.getElementById("btnAdd").addEventListener("click", function() {
-        const container = document.getElementById("dynamic-fields");
-        
-        const firstWrapper = container.querySelector(".field-group-wrapper");
-        const newWrapper = firstWrapper.cloneNode(true);
-        
-        newWrapper.querySelectorAll("textarea").forEach(t => t.value = "");
-        
-        newWrapper.classList.add("show-remove");
+    const form = document.getElementById("csvForm");
+    const submitBtn = document.querySelector(".submit-btn");
+    const toast = document.getElementById("confirmToast");
+    const toastMessage = document.getElementById("toastMessage");
+    const toastConfirm = document.getElementById("toastConfirm");
+    const toastCancel = document.getElementById("toastCancel");
 
-        newWrapper.querySelector(".remove-btn").addEventListener("click", function() {
-            newWrapper.remove();
-        });
+    function setSubmitting(isSubmitting) {
+        submitBtn.disabled = isSubmitting;
+        submitBtn.textContent = isSubmitting ? "GERANDO..." : "GERAR ARQUIVO CSV";
+    }
 
-        container.appendChild(newWrapper);
-        
-        newWrapper.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    });
+    function showToast(message, onConfirm) {
+        toastMessage.textContent = message;
+        toast.classList.add("show");
 
-    document.getElementById("csvForm").addEventListener("submit", async function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
+        toastConfirm.onclick = function() {
+            toast.classList.remove("show");
+            onConfirm();
+        };
+
+        toastCancel.onclick = function() {
+            toast.classList.remove("show");
+            setSubmitting(false);
+        };
+    }
+
+    async function enviarCsv(formData) {
+        setSubmitting(true);
 
         try {
             const response = await fetch("/gerar-csv", {
@@ -71,10 +86,29 @@
                 body: formData
             });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                alert(errorText);
-                return;
+            const contentType = response.headers.get("content-type") || "";
+
+            if (contentType.includes("application/json")) {
+                const data = await response.json();
+
+                if (data.requires_confirmation) {
+                    showToast(`${data.message} Códigos: ${data.missing_codes.join(", ")}`, () => {
+                        formData.set("prosseguir_com_codigos_nao_encontrados", "1");
+                        enviarCsv(formData);
+                    });
+                    return;
+                }
+
+                if (!response.ok) {
+                    alert(data.error || "Erro ao gerar o CSV.");
+                    return;
+                }
+            } else {
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    alert(errorText);
+                    return;
+                }
             }
 
             const blob = await response.blob();
@@ -88,7 +122,34 @@
             window.URL.revokeObjectURL(url);
         } catch (err) {
             alert("Erro ao conectar com o servidor.");
+        } finally {
+            setSubmitting(false);
         }
+    }
+
+    document.getElementById("btnAdd").addEventListener("click", function() {
+        const container = document.getElementById("dynamic-fields");
+
+        const firstWrapper = container.querySelector(".field-group-wrapper");
+        const newWrapper = firstWrapper.cloneNode(true);
+
+        newWrapper.querySelectorAll("textarea").forEach(t => t.value = "");
+
+        newWrapper.classList.add("show-remove");
+
+        newWrapper.querySelector(".remove-btn").addEventListener("click", function() {
+            newWrapper.remove();
+        });
+
+        container.appendChild(newWrapper);
+
+        newWrapper.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    });
+
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+        enviarCsv(formData);
     });
 </script>
 </body>

@@ -131,4 +131,60 @@
             cursor: pointer;
         }
 
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: wait;
+        }
+
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 24px;
+            transform: translateX(-50%) translateY(20px);
+            background: #1f163d;
+            color: white;
+            border-radius: 10px;
+            padding: 14px 16px;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+            display: none;
+            gap: 12px;
+            align-items: center;
+            z-index: 1000;
+            max-width: 90vw;
+        }
+
+        .toast.show {
+            display: flex;
+            animation: fadeUp 0.25s ease forwards;
+        }
+
+        .toast-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .toast-btn {
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .toast-btn.confirm {
+            background: var(--purple);
+            color: white;
+        }
+
+        .toast-btn.cancel {
+            background: #ddd;
+            color: #222;
+        }
+
         .footer { margin-top: 15px; font-size: 11px; color: #aaa; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
