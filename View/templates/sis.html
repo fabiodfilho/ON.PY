@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sis.py — on.py</title>
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/home.css">
+    <link rel="stylesheet" href="/static/sis.css">
+</head>
+<body class="onpy-home">
+
+    <div class="onpy-nav-wrap">
+        <div class="onpy-nav">
+            <a href="/"><img class="onpy-logo" src="/static/images/Logo_on_py_horizontal.svg" alt="on.py"></a>
+            
+            <!-- 
+            <button class="onpy-menu-btn" id="onpyMenuBtn" aria-label="Abrir menu">
+                <img src="/static/images/fi-rr-menu-burger.svg" alt="">
+            </button>
+            -->
+            
+        </div>
+    </div>
+
+    <main class="onpy-tool-main">
+        <div class="onpy-badge-wrap">
+            <div class="onpy-badge">
+                <img src="/static/images/Group_213.svg" alt="sis.py">
+            </div>
+        </div>
+
+        <p class="onpy-tool-subtitle">Selecione as entidades que deseja integrar com o Canvas</p>
+
+        <div class="onpy-tool-card">
+            <form id="csvForm">
+                <div id="dynamic-fields">
+                    <div class="field-group-wrapper">
+                        <div class="field-group">
+                            <label>IDs do(s) curso(s):</label>
+                            <textarea name="cursos[]" placeholder="Um por linha"></textarea>
+
+                            <div class="field-row-header">
+                                <label>IDs de login(s):</label>
+                                <div class="role-checkboxes">
+                                    <label class="role-checkbox">
+                                        <!-- Alterado para radio button. "name" agrupa os itens do mesmo bloco -->
+                                        <input type="radio" class="role-cb" name="role_0" value="student">
+                                        Aluno
+                                    </label>
+                                    <label class="role-checkbox">
+                                        <input type="radio" class="role-cb" name="role_0" value="teacher">
+                                        Professor
+                                    </label>
+                                    <label class="role-checkbox">
+                                        <input type="radio" class="role-cb" name="role_0" value="Coordenador">
+                                        Coordenador
+                                    </label>
+                                </div>
+                            </div>
+                            <textarea name="matriculas[]" placeholder="Uma por linha"></textarea>
+                        </div>
+                        <button type="button" class="remove-btn" title="Remover este bloco">❌</button>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button type="button" class="add-btn" id="btnAdd" title="Adicionar novo bloco">+</button>
+                    <button type="submit" class="submit-btn">Gerar CSV</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <div id="msgToast" class="toast" role="dialog" aria-live="polite" aria-modal="true">
+        <p id="toastMessage"></p>
+        <div class="toast-actions">
+            <button type="button" id="toastClose" class="toast-btn confirm">Entendi</button>
+        </div>
+    </div>
+
+    <footer class="onpy-footer">
+        <img class="onpy-logo-vertical" src="/static/images/Logo_on_py_vertical.svg" alt="on.py">
+        <span class="onpy-version">Versão beta 1.0 - Powered by @fabiodfilho</span>
+    </footer>
+
+    <script>
+        const form = document.getElementById("csvForm");
+        const submitBtn = document.querySelector(".submit-btn");
+        
+        // Elementos do Toast
+        const toast = document.getElementById("msgToast");
+        const toastMessage = document.getElementById("toastMessage");
+        const toastClose = document.getElementById("toastClose");
+        let blockCounter = 1;
+
+        function setSubmitting(isSubmitting) {
+            submitBtn.disabled = isSubmitting;
+            submitBtn.textContent = isSubmitting ? "GERANDO..." : "Gerar CSV";
+        }
+
+        // Função para mostrar o Toast
+        function showToast(message) {
+            toastMessage.textContent = message;
+            toast.classList.add("show");
+        }
+
+        // Função para fechar o Toast
+        toastClose.addEventListener("click", function() {
+            toast.classList.remove("show");
+        });
+
+        async function enviarCsv(formData) {
+            setSubmitting(true);
+
+            try {
+                const response = await fetch("/gerar-csv", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const contentType = response.headers.get("content-type") || "";
+
+                if (contentType.includes("application/json")) {
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        showToast(data.error || "Erro ao gerar o CSV.");
+                        return;
+                    }
+                } else if (!response.ok) {
+                    const errorText = await response.text();
+                    showToast(errorText);
+                    return;
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "matriculas_sis.csv";
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+
+            } catch (err) {
+                showToast("Erro ao conectar com o servidor.");
+            } finally {
+                setSubmitting(false);
+            }
+        }
+
+        document.getElementById("btnAdd").addEventListener("click", function() {
+            const container = document.getElementById("dynamic-fields");
+            const firstWrapper = container.querySelector(".field-group-wrapper");
+            const newWrapper = firstWrapper.cloneNode(true);
+
+            newWrapper.querySelectorAll("textarea").forEach(t => t.value = "");
+            
+            const currentBlockName = "role_" + blockCounter;
+            newWrapper.querySelectorAll("input[type='radio']").forEach(r => {
+                r.name = currentBlockName;
+                // r.checked = (r.value === 'student'); 
+            });
+            blockCounter++;
+
+            newWrapper.classList.add("show-remove");
+
+            newWrapper.querySelector(".remove-btn").addEventListener("click", function() {
+                newWrapper.remove();
+            });
+
+            container.appendChild(newWrapper);
+            newWrapper.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        });
+
+        form.addEventListener("submit", function(e) {
+            e.preventDefault();
+            
+            const customFormData = new FormData();
+            let formValido = true;
+            let errorMessage = "";
+
+            document.querySelectorAll(".field-group-wrapper").forEach((wrapper) => {
+                const cursos = wrapper.querySelector("textarea[name='cursos[]']").value.trim();
+                const matriculas = wrapper.querySelector("textarea[name='matriculas[]']").value.trim();
+                
+                const radioSelecionado = wrapper.querySelector("input[type='radio']:checked");
+                const tipo = radioSelecionado ? radioSelecionado.value : "";
+                
+                if (!tipo && (cursos || matriculas)) {
+                    errorMessage = "Por favor, selecione o papel (Aluno, Professor ou Coordenador) em todos os blocos preenchidos.";
+                    formValido = false;
+                }
+
+                customFormData.append("cursos[]", cursos);
+                customFormData.append("matriculas[]", matriculas);
+                customFormData.append("tipos[]", tipo);
+            });
+
+            if (formValido) {
+                enviarCsv(customFormData);
+            } else {
+                showToast(errorMessage);
+            }
+        });
+    </script>
+</body>
+</html>

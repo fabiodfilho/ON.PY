@@ -7,31 +7,39 @@ app = Flask(__name__,
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('home.html')
+
+@app.route('/sis')
+def sis_page():
+    return render_template('sis.html')
+
+@app.route('/home.old')
+def home_old():
+    return render_template('index.old.html')
+
+@app.route('/sispy')
+def sispy_page():
+    return render_template('sis.html')
 
 @app.route('/gerar-csv', methods=['POST'])
 def gerar_csv():
-    prosseguir = request.form.get('prosseguir_com_codigos_nao_encontrados', '0') in ('1', 'true', 'True', 'yes', 'sim')
+    lista_cursos = request.form.getlist('cursos[]')
+    lista_matriculas = request.form.getlist('matriculas[]')
+    lista_tipos = request.form.getlist('tipos[]')
 
-    csv_data, erros, codigos_nao_encontrados = processar_geracao_csv(
-        request.form.getlist('cursos[]'),
-        request.form.getlist('matriculas[]'),
-        prosseguir_com_codigos_nao_encontrados=prosseguir
-    )
+    if not any(lista_cursos) and not any(lista_matriculas):
+        return jsonify({"error": "Nenhum dado foi preenchido."}), 400
 
-    if codigos_nao_encontrados and not prosseguir:
-        return jsonify({
-            "requires_confirmation": True,
-            "missing_codes": codigos_nao_encontrados,
-            "message": "Alguns códigos não foram encontrados no banco. Deseja prosseguir com os códigos informados?"
-        }), 200
+    csv_data, erros = processar_geracao_csv(lista_cursos, lista_matriculas, lista_tipos)
 
     if erros:
-        return jsonify({"error": f"Erros na geração do CSV: {'<br>'.join(erros)}"}), 400
+        return jsonify({"error": " | ".join(erros)}), 400
 
-    res = Response(csv_data, mimetype="text/csv")
-    res.headers["Content-Disposition"] = "attachment; filename=matriculas_sis.csv"
-    return res
+    return Response(
+        csv_data,
+        mimetype="text/csv",
+        headers={"Content-disposition": "attachment; filename=matriculas_sis.csv"}
+    )
 
 if __name__ == '__main__':
     app.run(debug=True)

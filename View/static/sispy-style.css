@@ -1,0 +1,224 @@
+/* Variáveis e Reset restritos apenas à página SISpy */
+.sispy-page {
+    --purple: #6C3BFF;
+    --bg-dark: radial-gradient(circle at top, #1a0f4a, #05010f);
+    --card: #EDEDED;
+    --text: #111;
+    --danger: #ff4d4d; 
+    
+    font-family: 'Montserrat', sans-serif; /* Atualizado para a fonte que você importou */
+    background: var(--bg-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    margin: 0;
+}
+
+/* Aplica o box-sizing e zera margens apenas nos elementos dentro desta página */
+.sispy-page * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.sispy-page .logo { 
+    margin-bottom: 30px; 
+}
+
+.sispy-page .container {
+    background: var(--card);
+    padding: 30px;
+    border-radius: 12px;
+    width: 460px; 
+    max-width: 100%;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    position: relative;
+}
+
+.sispy-page form { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 15px; 
+}
+
+.sispy-page label { 
+    font-size: 13px; 
+    font-weight: 600; 
+    color: var(--text); 
+    margin-top: 10px; 
+}
+
+.sispy-page textarea {
+    width: 100%;
+    height: 80px; /* Corrigido: adicionado 'px' */
+    border: 0px;
+    border-radius: 6px;
+    background: #DCDCDC;
+    padding: 10px;
+    resize: none;
+    font-family: inherit;
+}
+
+.sispy-page .field-group-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    animation: fadeIn 0.3s ease-out;
+    position: relative;
+}
+
+.sispy-page .field-group-wrapper:last-child { 
+    border-bottom: none; 
+    margin-bottom: 0; 
+}
+
+.sispy-page .field-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.sispy-page .remove-btn {
+    background: none;
+    border: none;
+    color: var(--danger);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 5px;
+    margin-top: 35px;
+    opacity: 0.7;
+    transition: opacity 0.2s, transform 0.1s;
+    display: none;
+}
+
+.sispy-page .remove-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.sispy-page .show-remove .remove-btn {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.sispy-page .actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 2px solid #ddd;
+}
+
+.sispy-page .add-btn {
+    width: 32px;
+    height: 32px;
+    background: black;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sispy-page .submit-btn {
+    background: var(--purple);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.sispy-page .submit-btn:disabled {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+.sispy-page .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%) translateY(20px);
+    background: #1f163d;
+    color: white;
+    border-radius: 10px;
+    padding: 14px 16px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+    display: none;
+    gap: 12px;
+    align-items: center;
+    z-index: 1000;
+    max-width: 90vw;
+}
+
+.sispy-page .toast.show {
+    display: flex;
+    animation: fadeUp 0.25s ease forwards;
+}
+
+.sispy-page .toast-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.sispy-page .toast-btn {
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.sispy-page .toast-btn.confirm {
+    background: var(--purple);
+    color: white;
+}
+
+.sispy-page .toast-btn.cancel {
+    background: #ddd;
+    color: #222;
+}
+
+.sispy-page .system-banner {
+    display: flex;
+    justify-content: center;
+    width: 460px;
+    max-width: 100%;
+    margin: 0 auto 18px;
+}
+
+.sispy-page .system-banner-image {
+    width: 100%;
+    border-radius: 14px;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2);
+    display: block;
+    margin-top: 40px; /* Substitui os <br> no HTML */
+}
+
+.sispy-page .footer { 
+    margin-top: 15px; 
+    font-size: 11px; 
+    color: #aaa; 
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
