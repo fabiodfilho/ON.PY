@@ -13,4 +13,4 @@ COPY . .
 EXPOSE 8000
 
 # Comando para rodar a aplicação em produção
-CMD ["gunicorn", "--workers", "3", "--bind", "0.0.0.0:8000", "app:app"]
+CMD ["gunicorn", "--workers", "3", "--bind", "0.0.0.0:8000", "main:app"]
