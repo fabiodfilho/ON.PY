@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>shortcuts.py — on.py</title>
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+    
+    <!-- Google Fonts: Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#F5F3FF',
+                            100: '#EDE9FE',
+                            500: '#7C3AED',
+                            600: '#2A00A2',
+                            700: '#1F007A',
+                            800: '#140052',
+                            900: '#0B0033',
+                            footer: '#080121'
+                        }
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(16px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        }
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+                        'fade-in-delayed': 'fadeInUp 0.5s ease-out 0.15s forwards'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Mantém o footer fixo durante a transição de saída */
+        .page-exit main {
+            opacity: 0 !important;
+            transform: translateY(-8px) scale(0.99) !important;
+            transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-[#F8F9FD] text-slate-900 font-sans min-h-full flex flex-col justify-between antialiased selection:bg-brand-500 selection:text-white relative overflow-x-hidden">
+
+    <!-- Orbe sutil de fundo -->
+    <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-gradient-to-tr from-brand-500/15 via-purple-300/20 to-transparent blur-3xl pointer-events-none -z-10 rounded-full"></div>
+
+    <!-- Header / Navbar -->
+    <header class="w-full pt-6 px-4 sm:px-6 lg:px-8 flex justify-center">
+        <nav class="bg-white/80 backdrop-blur-md border border-slate-200/80 shadow-sm rounded-full px-6 py-3 flex items-center justify-between w-full max-w-4xl transition-all hover:shadow-md">
+            <a href="/" class="flex items-center gap-2 text-slate-600 hover:text-brand-600 transition-colors font-medium text-xs sm:text-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                <span>Voltar ao início</span>
+            </a>
+            <a href="/" class="flex items-center">
+                <img class="h-6 w-auto" src="/static/images/Logo_on_py_horizontal.svg" alt="on.py">
+            </a>
+        </nav>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-16 flex flex-col items-center animate-fade-in-up">
+        
+        <!-- Cabeçalho -->
+        <div class="text-center space-y-3 mb-10">
+            <div class="inline-flex items-center justify-center p-3.5 bg-brand-600 shadow-lg shadow-brand-600/25 rounded-2xl border border-brand-500/30">
+                <img src="/static/images/shortcutsicon.svg" alt="shortcuts.py" class="h-6 w-auto">
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">shortcuts.py</h1>
+            <p class="text-slate-500 text-sm sm:text-base max-w-md mx-auto">
+                Selecione a automação desejada para iniciar o processo e acompanhar os logs de execução.
+            </p>
+        </div>
+
+        <!-- Grid de Cards dos Atalhos -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+
+            <!-- Atalho 1: Ofertas RM <-> Canvas -->
+            <a href="/shortcuts/codigos-ofertas" class="group bg-white rounded-3xl p-6 shadow-xl shadow-slate-200/60 border border-slate-100 hover:border-brand-500/40 transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between">
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center border border-brand-100 group-hover:bg-brand-600 group-hover:text-white transition-colors duration-300">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                        </div>
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
+                            Extração de Dados
+                        </span>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h2 class="text-lg font-bold text-slate-900 group-hover:text-brand-600 transition-colors">
+                            Códigos de Ofertas
+                        </h2>
+                        <p class="text-xs text-slate-500 font-medium leading-relaxed">
+                            Puxa os códigos das ofertas por subconta(s) para sincronização e integração entre o RM e o Canvas.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-brand-600">
+                    <span>Executar atalho</span>
+                    <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </div>
+            </a>
+
+            <!-- Atalho 2: Período de Participação -->
+            <a href="/shortcuts/periodo" class="group bg-white rounded-3xl p-6 shadow-xl shadow-slate-200/60 border border-slate-100 hover:border-brand-500/40 transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between">
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center border border-brand-100 group-hover:bg-brand-600 group-hover:text-white transition-colors duration-300">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        </div>
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
+                            Configuração
+                        </span>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h2 class="text-lg font-bold text-slate-900 group-hover:text-brand-600 transition-colors">
+                            Período de Participação
+                        </h2>
+                        <p class="text-xs text-slate-500 font-medium leading-relaxed">
+                            Atualiza o tipo de período de participação da oferta no Canvas, alterando de "curso" para um período específico.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-brand-600">
+                    <span>Executar atalho</span>
+                    <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </div>
+            </a>
+
+            <!-- Atalho 3: Inativar & Despublicar -->
+            <a href="/shortcuts/inativar" class="group bg-white rounded-3xl p-6 shadow-xl shadow-slate-200/60 border border-slate-100 hover:border-rose-500/40 transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between">
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-100 group-hover:bg-rose-600 group-hover:text-white transition-colors duration-300">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                        </div>
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-rose-100 text-rose-700">
+                            Ação em Massa
+                        </span>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h2 class="text-lg font-bold text-slate-900 group-hover:text-rose-600 transition-colors">
+                            Inativar & Despublicar
+                        </h2>
+                        <p class="text-xs text-slate-500 font-medium leading-relaxed">
+                            Inativa todos os inscritos de um curso específico no Canvas e realiza o processo de despublicação da disciplina.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-rose-600">
+                    <span>Executar atalho</span>
+                    <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+    {% include "components/footer.html" %}
+
+</body>
+</html>

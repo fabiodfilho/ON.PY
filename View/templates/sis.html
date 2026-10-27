@@ -49,13 +49,11 @@
 </script>
 
 <style>
-    /* Suavizador global para transição de saída da página */
-    body {
-        transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
-    }
-    .page-exit {
+    /* Mantém o footer fixo durante a transição de saída */
+    .page-exit main {
         opacity: 0 !important;
         transform: translateY(-8px) scale(0.99) !important;
+        transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
     }
 </style>
 </head>
@@ -168,17 +166,7 @@
         </div>
     </div>
 
-    <!-- Rodapé -->
-    <footer class="w-full bg-brand-footer border-t border-slate-800 py-6 px-4 sm:px-6 lg:px-8 mt-auto">
-        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <img class="h-8 w-auto" src="/static/images/Logo_on_py_vertical.svg" alt="on.py">
-            </div>
-            <p class="text-xs text-slate-400 font-medium">
-                Versão beta 1.0 &bull; Powered by <span class="text-purple-300 hover:text-white transition-colors">@fabiodfilho</span>
-            </p>
-        </div>
-    </footer>
+    {% include "components/footer.html" %}
 
     <!-- Script com Lógica Mantida e Atualizada -->
     <script>
@@ -335,6 +323,10 @@
 
     <script>
     // Intercepta cliques nos links internos para efeito Smooth Exit
+    window.addEventListener("pageshow", () => {
+        document.body.classList.remove("page-exit");
+    });
+
     document.addEventListener("DOMContentLoaded", () => {
         document.body.classList.remove("page-exit");
 

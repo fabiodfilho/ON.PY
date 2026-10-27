@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, Response, jsonify
 from Controller.csv_controller import processar_geracao_csv
+from Controller.views import init_ofertas_routes
 
 app = Flask(__name__, 
             template_folder='View/templates', 
@@ -8,6 +9,14 @@ app = Flask(__name__,
 @app.route('/')
 def index():
     return render_template('home.html')
+
+@app.route("/shortcuts")
+def shortcuts_page():
+    return render_template("shortcuts.html")
+
+@app.route("/shortcuts/codigos-ofertas")
+def shortcuts_codigos_ofertas_page():
+    return render_template("shortcut-ofertas.html")
 
 @app.route('/sis')
 def sis_page():
@@ -40,6 +49,8 @@ def gerar_csv():
         mimetype="text/csv",
         headers={"Content-disposition": "attachment; filename=matriculas_sis.csv"}
     )
+
+init_ofertas_routes(app)
 
 if __name__ == '__main__':
     app.run(debug=True)
