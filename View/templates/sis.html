@@ -1,116 +1,232 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>sis.py — on.py</title>
     <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+    
+    <!-- Google Fonts: Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/style.css">
-    <link rel="stylesheet" href="/static/home.css">
-    <link rel="stylesheet" href="/static/sis.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    sans: ['Montserrat', 'sans-serif'],
+                },
+                colors: {
+                    brand: {
+                        50: '#F5F3FF',
+                        100: '#EDE9FE',
+                        500: '#7C3AED',
+                        600: '#2A00A2',
+                        700: '#1F007A',
+                        800: '#140052',
+                        900: '#0B0033',
+                        footer: '#080121'
+                    }
+                },
+                // NOVAS ANIMAÇÕES
+                keyframes: {
+                    fadeInUp: {
+                        '0%': { opacity: '0', transform: 'translateY(16px)' },
+                        '100%': { opacity: '1', transform: 'translateY(0)' }
+                    }
+                },
+                animation: {
+                    'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+                    'fade-in-delayed': 'fadeInUp 0.5s ease-out 0.15s forwards'
+                }
+            }
+        }
+    }
+</script>
+
+<style>
+    /* Suavizador global para transição de saída da página */
+    body {
+        transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
+    }
+    .page-exit {
+        opacity: 0 !important;
+        transform: translateY(-8px) scale(0.99) !important;
+    }
+</style>
 </head>
-<body class="onpy-home">
+<body class="bg-[#F8F9FD] text-slate-900 font-sans min-h-full flex flex-col justify-between antialiased selection:bg-brand-500 selection:text-white relative overflow-x-hidden">
 
-    <div class="onpy-nav-wrap">
-        <div class="onpy-nav">
-            <a href="/"><img class="onpy-logo" src="/static/images/Logo_on_py_horizontal.svg" alt="on.py"></a>
-            
-            <!-- 
-            <button class="onpy-menu-btn" id="onpyMenuBtn" aria-label="Abrir menu">
-                <img src="/static/images/fi-rr-menu-burger.svg" alt="">
-            </button>
-            -->
-            
-        </div>
-    </div>
+    <!-- Orbe sutil de fundo -->
+    <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-gradient-to-tr from-brand-500/15 via-purple-300/20 to-transparent blur-3xl pointer-events-none -z-10 rounded-full"></div>
 
-    <main class="onpy-tool-main">
-        <div class="onpy-badge-wrap">
-            <div class="onpy-badge">
-                <img src="/static/images/Group_213.svg" alt="sis.py">
+    <!-- Header / Navbar -->
+    <header class="w-full pt-6 px-4 sm:px-6 lg:px-8 flex justify-center">
+        <nav class="bg-white/80 backdrop-blur-md border border-slate-200/80 shadow-sm rounded-full px-6 py-3 flex items-center justify-between w-full max-w-4xl transition-all hover:shadow-md">
+            <a href="/" class="flex items-center gap-2 text-slate-600 hover:text-brand-600 transition-colors font-medium text-xs sm:text-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                <span>Voltar ao início</span>
+            </a>
+            <a href="/" class="flex items-center">
+                <img class="h-6 w-auto" src="/static/images/Logo_on_py_horizontal.svg" alt="on.py">
+            </a>
+        </nav>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-16 flex flex-col items-center animate-fade-in-up">
+        
+        <!-- Cabeçalho da Ferramenta -->
+        <div class="text-center space-y-3 mb-8">
+            <div class="inline-flex items-center justify-center p-3.5 bg-brand-600 shadow-lg shadow-brand-600/25 rounded-2xl border border-brand-500/30">
+                <img src="/static/images/Group_213.svg" alt="sis.py" class="h-6 w-auto">
             </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Formatação SIS Canvas</h1>
+            <p class="text-slate-500 text-sm sm:text-base max-w-md mx-auto">
+                Selecione os papéis e insira os dados para gerar o ficheiro CSV de integração.
+            </p>
         </div>
 
-        <p class="onpy-tool-subtitle">Selecione as entidades que deseja integrar com o Canvas</p>
+        <!-- Cartão do Formulário -->
+        <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-100 p-6 sm:p-8 w-full">
+            <form id="csvForm" class="space-y-6">
+                
+                <!-- Contentor de Blocos Dinâmicos -->
+                <div id="dynamic-fields" class="space-y-6">
+                    
+                    <!-- Bloco Modelo 1 -->
+                    <div class="field-group-wrapper bg-slate-50/80 border border-slate-200/80 rounded-2xl p-5 sm:p-6 relative transition-all duration-300 hover:border-slate-300">
+                        <button type="button" class="remove-btn hidden absolute top-4 right-4 text-slate-400 hover:text-rose-500 p-1.5 rounded-xl hover:bg-rose-50 transition-all" title="Remover este bloco">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        </button>
 
-        <div class="onpy-tool-card">
-            <form id="csvForm">
-                <div id="dynamic-fields">
-                    <div class="field-group-wrapper">
-                        <div class="field-group">
-                            <label>IDs do(s) curso(s):</label>
-                            <textarea name="cursos[]" placeholder="Um por linha"></textarea>
-
-                            <div class="field-row-header">
-                                <label>IDs de login(s):</label>
-                                <div class="role-checkboxes">
-                                    <label class="role-checkbox">
-                                        <!-- Alterado para radio button. "name" agrupa os itens do mesmo bloco -->
-                                        <input type="radio" class="role-cb" name="role_0" value="student">
-                                        Aluno
-                                    </label>
-                                    <label class="role-checkbox">
-                                        <input type="radio" class="role-cb" name="role_0" value="teacher">
-                                        Professor
-                                    </label>
-                                    <label class="role-checkbox">
-                                        <input type="radio" class="role-cb" name="role_0" value="Coordenador">
-                                        Coordenador
-                                    </label>
-                                </div>
+                        <div class="field-group space-y-5">
+                            <!-- IDs do Curso -->
+                            <div class="space-y-2">
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600">IDs do(s) curso(s):</label>
+                                <textarea name="cursos[]" placeholder="Insira os IDs dos cursos (um por linha)..." rows="3" class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-white placeholder:text-slate-400 transition-all font-mono resize-y"></textarea>
                             </div>
-                            <textarea name="matriculas[]" placeholder="Uma por linha"></textarea>
+
+                            <!-- Seleção de Papel + Matrículas -->
+                            <div class="space-y-3">
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600">IDs de login(s):</label>
+                                    
+                                    <!-- Radio Pills -->
+                                    <div class="role-checkboxes flex items-center gap-1 bg-slate-200/70 p-1 rounded-xl text-xs font-semibold">
+                                        <label class="role-checkbox flex-1 cursor-pointer">
+                                            <input type="radio" class="role-cb sr-only peer" name="role_0" value="student">
+                                            <span class="block px-3 py-1.5 text-center rounded-lg text-slate-600 peer-checked:bg-brand-600 peer-checked:text-white peer-checked:shadow-sm transition-all">Aluno</span>
+                                        </label>
+                                        <label class="role-checkbox flex-1 cursor-pointer">
+                                            <input type="radio" class="role-cb sr-only peer" name="role_0" value="teacher">
+                                            <span class="block px-3 py-1.5 text-center rounded-lg text-slate-600 peer-checked:bg-brand-600 peer-checked:text-white peer-checked:shadow-sm transition-all">Professor</span>
+                                        </label>
+                                        <label class="role-checkbox flex-1 cursor-pointer">
+                                            <input type="radio" class="role-cb sr-only peer" name="role_0" value="Coordenador">
+                                            <span class="block px-3 py-1.5 text-center rounded-lg text-slate-600 peer-checked:bg-brand-600 peer-checked:text-white peer-checked:shadow-sm transition-all">Coordenador</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <textarea name="matriculas[]" placeholder="Insira os logins / matrículas (um por linha)..." rows="4" class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-white placeholder:text-slate-400 transition-all font-mono resize-y"></textarea>
+                            </div>
                         </div>
-                        <button type="button" class="remove-btn" title="Remover este bloco">❌</button>
                     </div>
+
                 </div>
 
-                <div class="actions">
-                    <button type="button" class="add-btn" id="btnAdd" title="Adicionar novo bloco">+</button>
-                    <button type="submit" class="submit-btn">Gerar CSV</button>
+                <!-- Botões de Ação -->
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-100">
+                    <button type="button" id="btnAdd" class="add-btn w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border-2 border-dashed border-slate-300 hover:border-brand-500 text-slate-600 hover:text-brand-600 font-semibold text-sm transition-all hover:bg-brand-50/50">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                        <span>Adicionar Novo Bloco</span>
+                    </button>
+
+                    <button type="submit" class="submit-btn w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-lg shadow-brand-600/25 hover:shadow-xl hover:shadow-brand-600/35 transition-all transform active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        <span>Gerar CSV</span>
+                    </button>
                 </div>
             </form>
         </div>
     </main>
 
-    <div id="msgToast" class="toast" role="dialog" aria-live="polite" aria-modal="true">
-        <p id="toastMessage"></p>
-        <div class="toast-actions">
-            <button type="button" id="toastClose" class="toast-btn confirm">Entendi</button>
+    <!-- Modal / Toast de Erro e Alertas -->
+    <div id="msgToast" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="toast-card bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl border border-slate-100 space-y-4 text-center transform scale-95 transition-transform duration-300">
+            <div class="w-12 h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mx-auto">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            </div>
+            <p id="toastMessage" class="text-slate-700 font-medium text-sm sm:text-base leading-relaxed"></p>
+            <button type="button" id="toastClose" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm transition-colors">
+                Entendi
+            </button>
         </div>
     </div>
 
-    <footer class="onpy-footer">
-        <img class="onpy-logo-vertical" src="/static/images/Logo_on_py_vertical.svg" alt="on.py">
-        <span class="onpy-version">Versão beta 1.0 - Powered by @fabiodfilho</span>
+    <!-- Rodapé -->
+    <footer class="w-full bg-brand-footer border-t border-slate-800 py-6 px-4 sm:px-6 lg:px-8 mt-auto">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <img class="h-8 w-auto" src="/static/images/Logo_on_py_vertical.svg" alt="on.py">
+            </div>
+            <p class="text-xs text-slate-400 font-medium">
+                Versão beta 1.0 &bull; Powered by <span class="text-purple-300 hover:text-white transition-colors">@fabiodfilho</span>
+            </p>
+        </div>
     </footer>
 
+    <!-- Script com Lógica Mantida e Atualizada -->
     <script>
         const form = document.getElementById("csvForm");
         const submitBtn = document.querySelector(".submit-btn");
         
-        // Elementos do Toast
+        // Elementos do Toast/Modal
         const toast = document.getElementById("msgToast");
+        const toastCard = toast.querySelector(".toast-card");
         const toastMessage = document.getElementById("toastMessage");
         const toastClose = document.getElementById("toastClose");
         let blockCounter = 1;
 
         function setSubmitting(isSubmitting) {
             submitBtn.disabled = isSubmitting;
-            submitBtn.textContent = isSubmitting ? "GERANDO..." : "Gerar CSV";
+            const span = submitBtn.querySelector("span");
+            if (span) {
+                span.textContent = isSubmitting ? "GERANDO..." : "Gerar CSV";
+            }
         }
 
-        // Função para mostrar o Toast
+        // Mostrar Toast
         function showToast(message) {
             toastMessage.textContent = message;
-            toast.classList.add("show");
+            toast.classList.remove("opacity-0", "pointer-events-none");
+            toastCard.classList.remove("scale-95");
+            toastCard.classList.add("scale-100");
         }
 
-        // Função para fechar o Toast
+        // Fechar Toast
         toastClose.addEventListener("click", function() {
-            toast.classList.remove("show");
+            toast.classList.add("opacity-0", "pointer-events-none");
+            toastCard.classList.remove("scale-100");
+            toastCard.classList.add("scale-95");
         });
+
+        // Atualizar visibilidade dos botões de remover
+        function updateRemoveButtons() {
+            const wrappers = document.querySelectorAll(".field-group-wrapper");
+            wrappers.forEach(w => {
+                const removeBtn = w.querySelector(".remove-btn");
+                if (wrappers.length > 1) {
+                    removeBtn.classList.remove("hidden");
+                } else {
+                    removeBtn.classList.add("hidden");
+                }
+            });
+        }
 
         async function enviarCsv(formData) {
             setSubmitting(true);
@@ -153,30 +269,35 @@
             }
         }
 
+        // Adicionar novo bloco dinâmico
         document.getElementById("btnAdd").addEventListener("click", function() {
             const container = document.getElementById("dynamic-fields");
             const firstWrapper = container.querySelector(".field-group-wrapper");
             const newWrapper = firstWrapper.cloneNode(true);
 
+            // Limpar valores dos textareas
             newWrapper.querySelectorAll("textarea").forEach(t => t.value = "");
             
+            // Renomear o grupo de radio buttons para ser único neste novo bloco
             const currentBlockName = "role_" + blockCounter;
             newWrapper.querySelectorAll("input[type='radio']").forEach(r => {
                 r.name = currentBlockName;
-                // r.checked = (r.value === 'student'); 
+                r.checked = false; 
             });
             blockCounter++;
 
-            newWrapper.classList.add("show-remove");
-
+            // Configurar o botão de remoção no novo bloco
             newWrapper.querySelector(".remove-btn").addEventListener("click", function() {
                 newWrapper.remove();
+                updateRemoveButtons();
             });
 
             container.appendChild(newWrapper);
-            newWrapper.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            updateRemoveButtons();
+            newWrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
         });
 
+        // Evento de envio do formulário
         form.addEventListener("submit", function(e) {
             e.preventDefault();
             
@@ -207,6 +328,33 @@
                 showToast(errorMessage);
             }
         });
+
+        // Inicializar a visibilidade dos botões ao carregar a página
+        updateRemoveButtons();
     </script>
+
+    <script>
+    // Intercepta cliques nos links internos para efeito Smooth Exit
+    document.addEventListener("DOMContentLoaded", () => {
+        document.body.classList.remove("page-exit");
+
+        document.querySelectorAll('a[href^="/"]').forEach(anchor => {
+            anchor.addEventListener("click", function (e) {
+                const targetUrl = this.getAttribute("href");
+
+                // Ignorar se for apenas âncora (#) ou link para nova aba
+                if (!targetUrl || targetUrl === "#" || this.target === "_blank") return;
+
+                e.preventDefault();
+                document.body.classList.add("page-exit");
+
+                setTimeout(() => {
+                    window.location.href = targetUrl;
+                }, 200); // Tempo idêntico ao da animação de saída
+            });
+        });
+    });
+</script>
+
 </body>
 </html>
