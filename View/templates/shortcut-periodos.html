@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atualizar Períodos — shortcuts.py</title>
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+    
+    <!-- Google Fonts: Montserrat & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#F5F3FF',
+                            100: '#EDE9FE',
+                            500: '#7C3AED',
+                            600: '#2A00A2',
+                            700: '#1F007A',
+                            800: '#140052',
+                            900: '#0B0033',
+                            footer: '#080121'
+                        }
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(16px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        }
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.5s ease-out forwards'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-[#F8F9FD] text-slate-900 font-sans min-h-full flex flex-col justify-between antialiased selection:bg-brand-500 selection:text-white relative overflow-x-hidden">
+
+    <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-gradient-to-tr from-brand-500/15 via-purple-300/20 to-transparent blur-3xl pointer-events-none -z-10 rounded-full"></div>
+
+    <!-- Header / Navbar -->
+    <header class="w-full pt-6 px-4 sm:px-6 lg:px-8 flex justify-center">
+        <nav class="bg-white/80 backdrop-blur-md border border-slate-200/80 shadow-sm rounded-full px-6 py-3 flex items-center justify-between w-full max-w-4xl transition-all hover:shadow-md">
+            <a href="/shortcuts" class="flex items-center gap-2 text-slate-600 hover:text-brand-600 transition-colors font-medium text-xs sm:text-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                <span>Voltar para Atalhos</span>
+            </a>
+            <a href="/" class="flex items-center">
+                <img class="h-6 w-auto" src="/static/images/Logo_on_py_horizontal.svg" alt="on.py">
+            </a>
+        </nav>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-16 flex flex-col items-center animate-fade-in-up">
+        
+        <!-- Cabeçalho do Atalho -->
+        <div class="text-center space-y-2 mb-8">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-brand-50 text-brand-700 border border-brand-200/60">
+                Atalho de Gestão
+            </span>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Atualização de Períodos Letivos (Canvas)</h1>
+            <p class="text-slate-500 text-sm max-w-md mx-auto">
+                Altere em lote o Term ID (Período) e as datas de vigência das disciplinas por subconta ou IDs de cursos.
+            </p>
+        </div>
+
+        <!-- Card de Formulário + Terminal -->
+        <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-100 p-6 sm:p-8 w-full space-y-6">
+            
+            <form id="execFormPeriodos" class="space-y-5">
+                
+                <!-- Token de API do Canvas -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600">Token de API do Canvas:</label>
+                    <div class="relative">
+                        <input type="password" id="api_token" name="api_token" placeholder="Cole seu token de acesso do Canvas..." class="w-full px-4 py-3 pr-12 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-white placeholder:text-slate-400 transition-all font-mono" required>
+                        <button type="button" id="toggleToken" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1">
+                            <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Novo ID do Período (Term ID) -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600">ID do Novo Período (Term ID):</label>
+                    <input type="text" id="term_id" name="term_id" placeholder="Ex: 104" class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-white placeholder:text-slate-400 transition-all font-mono" required>
+                </div>
+
+                <!-- IDs dos Cursos ou Subcontas -->
+                <div class="space-y-2">
+                    <span class="block text-xs font-bold uppercase tracking-wider text-slate-600">Tipo de alvo:</span>
+                    <div id="target_type" class="flex items-center gap-1 bg-slate-200/70 p-1 rounded-xl text-xs font-semibold">
+                        <label class="flex-1 cursor-pointer">
+                            <input type="radio" class="sr-only peer" name="target_type" value="subaccounts" checked>
+                            <span class="block px-3 py-1.5 text-center rounded-lg text-slate-600 peer-checked:bg-brand-600 peer-checked:text-white peer-checked:shadow-sm transition-all">IDs das subcontas</span>
+                        </label>
+                        <label class="flex-1 cursor-pointer">
+                            <input type="radio" class="sr-only peer" name="target_type" value="course_codes">
+                            <span class="block px-3 py-1.5 text-center rounded-lg text-slate-600 peer-checked:bg-brand-600 peer-checked:text-white peer-checked:shadow-sm transition-all">Códigos dos cursos</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label id="targetsLabel" for="alvos" class="block text-xs font-bold uppercase tracking-wider text-slate-600">IDs das Subcontas:</label>
+                    <textarea id="alvos" name="alvos" placeholder="Insira os IDs das subcontas ou os códigos dos cursos (um por linha ou separados por vírgula)... Ex: 1201, 1202" rows="3" class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-white placeholder:text-slate-400 transition-all font-mono resize-y" required></textarea>
+                </div>
+
+                <!-- Status e botão -->
+
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+                    <span id="statusBadge" class="text-xs font-semibold text-slate-400 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-slate-300"></span> Aguardando execução
+                    </span>
+                    
+                    <button type="submit" id="btnRun" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md shadow-brand-600/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        <span>Atualizar Períodos</span>
+                    </button>
+                </div>
+
+            </form>
+
+            <!-- Terminal de Logs / Output -->
+            <div class="space-y-2 pt-4 border-t border-slate-100">
+                <div class="flex items-center justify-between text-xs text-slate-500 font-bold uppercase tracking-wider">
+                    <span>Console de Execução (Logs)</span>
+                    <button type="button" id="btnClearLogs" class="text-slate-400 hover:text-slate-600 font-normal">Limpar logs</button>
+                </div>
+
+                <div id="logConsole" class="w-full h-60 bg-slate-900 rounded-2xl p-4 text-xs font-mono text-emerald-400 overflow-y-auto space-y-1 shadow-inner leading-relaxed">
+                    <p class="text-slate-500">// Aguardando comando para iniciar a atualização...</p>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    {% include "components/footer.html" %}
+
+    <script src="/static/js/shortcut.periodos.js"></script>
+</body>
+</html>
