@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>on.py</title>
+    <title>on.py - Novo Endereço</title>
     <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
     
     <!-- Google Fonts: Montserrat -->
@@ -35,13 +35,23 @@
                 // NOVAS ANIMAÇÕES
                 keyframes: {
                     fadeInUp: {
-                        '0%': { opacity: '0', transform: 'translateY(16px)' },
+                        '0%': { opacity: '0', transform: 'translateY(20px)' },
                         '100%': { opacity: '1', transform: 'translateY(0)' }
+                    },
+                    float: {
+                        '0%, 100%': { transform: 'translateY(0)' },
+                        '50%': { transform: 'translateY(-10px)' }
+                    },
+                    pulseGlow: {
+                        '0%, 100%': { boxShadow: '0 0 0 0 rgba(124, 58, 237, 0.4)' },
+                        '50%': { boxShadow: '0 0 20px 10px rgba(124, 58, 237, 0)' }
                     }
                 },
                 animation: {
-                    'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
-                    'fade-in-delayed': 'fadeInUp 0.5s ease-out 0.15s forwards'
+                    'fade-in-up': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    'fade-in-delayed': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards',
+                    'float': 'float 4s ease-in-out infinite',
+                    'pulse-glow': 'pulseGlow 2.5s infinite'
                 }
             }
         }
@@ -49,124 +59,75 @@
 </script>
 
 <style>
-    /* Suavizador global para transição de saída da página */
+    /* Suavizador global para transições */
     body {
-        transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
+        transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
     }
     .page-exit {
         opacity: 0 !important;
         transform: translateY(-8px) scale(0.99) !important;
     }
+    /* Efeito Glassmorphism para o card central */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+    }
 </style>
 </head>
-<body class="bg-[#F8F9FD] text-slate-900 font-sans min-h-full flex flex-col justify-between antialiased selection:bg-brand-500 selection:text-white relative overflow-x-hidden">
+<body class="bg-[#F8F9FD] text-slate-900 font-sans min-h-full flex flex-col justify-between antialiased selection:bg-brand-500 selection:text-white relative overflow-hidden">
 
-    <!-- Orbes sutis de fundo para profundidade visual -->
-    <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-gradient-to-tr from-brand-500/15 via-purple-300/20 to-transparent blur-3xl pointer-events-none -z-10 rounded-full"></div>
+    <!-- Orbes sutis de fundo para profundidade visual (Agora animados) -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-gradient-to-tr from-brand-500/20 via-purple-300/30 to-brand-500/10 blur-3xl pointer-events-none -z-10 rounded-full animate-float" style="animation-duration: 7s;"></div>
 
-    <!-- Header / Navbar -->
-    <header class="w-full pt-6 px-4 sm:px-6 lg:px-8 flex justify-center">
-        <nav class="bg-white/80 backdrop-blur-md border border-slate-200/80 shadow-sm rounded-full px-8 py-3 flex items-center justify-between w-full max-w-4xl transition-all hover:shadow-md">
-            <a href="/" class="flex items-center">
-                <img class="h-7 w-auto" src="/static/images/Logo_on_py_horizontal.svg" alt="on.py">
-            </a>
-            <div class="flex items-center gap-2">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    Sistemas Online
-                </span>
-            </div>
+    <!-- Header / Navbar Minimalista -->
+    <header class="w-full pt-6 px-4 sm:px-6 lg:px-8 flex justify-center animate-fade-in-up">
+        <nav class="bg-white/70 backdrop-blur-md border border-slate-200/60 shadow-sm rounded-full px-8 py-3 flex items-center justify-center w-full max-w-4xl transition-all">
+            <img class="h-7 w-auto" src="/static/images/Logo_on_py_horizontal.svg" alt="on.py">
         </nav>
     </header>
 
-    <!-- Hero Section -->
-    <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16 flex flex-col items-center justify-center text-center animate-fade-in-up">
-        <div class="max-w-3xl space-y-4">
-        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight sm:leading-tight">
-            Na <span class="bg-gradient-to-r from-brand-600 via-purple-600 to-brand-500 bg-clip-text text-transparent">on.py</span> você automatiza e gera valor em processos complexos diários.
-        </h1>
-        <p class="text-base sm:text-lg text-purple-600/90 font-medium max-w-2xl mx-auto">
-            Aqui, milhares de dados são processados e tratados em minutos!
-        </p>
-        </div>
-
-        <!-- Grid de Cards de Ferramentas -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 w-full max-w-5xl mt-12 text-left ">
-
-            <!-- Card 1: sis.py (Ativo) -->
-            <a href="/sis" class="group relative bg-brand-600 hover:bg-brand-700 rounded-2xl p-6 text-white transition-all duration-300 transform hover:-translate-y-1.5 shadow-xl shadow-brand-600/20 hover:shadow-2xl hover:shadow-brand-600/30 border border-brand-500/30 flex flex-col justify-between min-h-[220px]">
-                <div>
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/10 group-hover:bg-white/20 transition-colors">
-                            <img src="/static/images/Group_202.svg" alt="Ícone SIS" class="w-5 h-5">
-                        </div>
-                        <img src="/static/images/Group_213.svg" alt="sis.py" class="h-5 w-auto">
-                    </div>
-                    <p class="text-sm text-purple-100 font-medium leading-relaxed">
-                        Formate arquivos CSV para importação SIS Canvas automaticamente.
-                    </p>
-                </div>
-                
-                <div class="flex justify-end mt-6">
-                    <div class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-brand-700 transition-all duration-300">
-                        <svg class="w-4 h-4 text-white group-hover:text-brand-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                        </svg>
-                    </div>
-                </div>
-            </a>
-
-            <!-- Card 2: auditoria.py (Em breve) -->
-            <div class="relative bg-brand-600/90 rounded-2xl p-6 text-white shadow-lg border border-brand-500/20 flex flex-col justify-between min-h-[220px]">
-                <div>
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/10">
-                            <img src="/static/images/Vector-1.svg" alt="Ícone Auditoria" class="w-5 h-5">
-                        </div>
-                        <img src="/static/images/Group_209.svg" alt="auditoria.py" class="h-5 w-auto">
-                    </div>
-                    <p class="text-sm text-purple-100/90 font-medium leading-relaxed">
-                        Gere relatório de tarefas avaliadas e no grupo de envio correto.
-                    </p>
-                </div>
-                
-                <div class="flex justify-end mt-6">
-                    <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold tracking-wider bg-white/10 backdrop-blur-md text-purple-200 border border-white/10">
-                        EM BREVE
-                    </span>
-                </div>
+    <!-- Main Content - Centralizado e Focado -->
+    <main class="flex-1 w-full mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center relative z-10">
+        
+        <div class="glass-card rounded-3xl p-8 sm:p-12 max-w-2xl w-full shadow-2xl shadow-brand-500/10 animate-fade-in-up flex flex-col items-center gap-6 transform transition-all duration-500 hover:scale-[1.02]">
+            
+            <!-- Ícone Animado de Direcionamento -->
+            <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center animate-float border border-brand-100 shadow-sm mb-2">
+                <svg class="w-10 h-10 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                </svg>
             </div>
 
-            <!-- Card 3: plan.py (Em breve) -->
-            <div class="relative bg-brand-600/90 rounded-2xl p-6 text-white shadow-lg border border-brand-500/20 flex flex-col justify-between min-h-[220px]">
-                <div>
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/10">
-                            <img src="/static/images/Vector.svg" alt="Ícone Plan" class="w-5 h-5">
-                        </div>
-                        <img src="/static/images/Group_217.svg" alt="plan.py" class="h-5 w-auto">
-                    </div>
-                    <p class="text-sm text-purple-100/90 font-medium leading-relaxed">
-                        Planejamento e estruturação automatizada de novos fluxos acadêmicos.
-                    </p>
-                </div>
-                
-                <div class="flex justify-end mt-6">
-                    <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold tracking-wider bg-white/10 backdrop-blur-md text-purple-200 border border-white/10">
-                        EM BREVE
-                    </span>
-                </div>
+            <div class="space-y-3">
+                <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                    Olá, <span class="bg-gradient-to-r from-brand-600 via-purple-600 to-brand-500 bg-clip-text text-transparent">mudamos nosso endereço!</span>
+                </h1>
+                <p class="text-lg sm:text-xl text-slate-600 font-medium">
+                    agora estamos funcionando em:
+                </p>
             </div>
 
+            <!-- Botão com Novo Link -->
+            <div class="animate-fade-in-delayed w-full mt-4">
+                <a href="https://onpy.unifacisa.edu.br" class="group relative inline-flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl font-bold text-lg md:text-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-brand-600/40 animate-pulse-glow overflow-hidden">
+                    <span class="relative z-10">onpy.unifacisa.edu.br</span>
+                    <svg class="w-5 h-5 relative z-10 transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                    </svg>
+                    <!-- Overlay de hover gradiente -->
+                    <div class="absolute inset-0 bg-gradient-to-r from-brand-500 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </a>
+            </div>
         </div>
+
     </main>
 
     <!-- Footer -->
-    <footer class="w-full bg-brand-footer border-t border-slate-800 py-6 px-4 sm:px-6 lg:px-8 mt-auto">
-        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <img class="h-8 w-auto" src="/static/images/Logo_on_py_vertical.svg" alt="on.py">
-            </div>
+    <footer class="w-full bg-brand-footer border-t border-slate-800 py-6 px-4 sm:px-6 lg:px-8 mt-auto z-10">
+        <div class="max-w-6xl mx-auto flex flex-col items-center justify-center gap-3">
+            <img class="h-7 w-auto opacity-90" src="/static/images/Logo_on_py_vertical.svg" alt="on.py">
             <p class="text-xs text-slate-400 font-medium">
                 Versão beta 1.0 &bull; Powered by <span class="text-purple-300 hover:text-white transition-colors">@fabiodfilho</span>
             </p>
@@ -174,27 +135,26 @@
     </footer>
 
     <script>
-    // Intercepta cliques nos links internos para efeito Smooth Exit
-    document.addEventListener("DOMContentLoaded", () => {
-        document.body.classList.remove("page-exit");
+        // Mantém o smooth exit se o usuário clicar no botão para navegar
+        document.addEventListener("DOMContentLoaded", () => {
+            document.body.classList.remove("page-exit");
 
-        document.querySelectorAll('a[href^="/"]').forEach(anchor => {
-            anchor.addEventListener("click", function (e) {
-                const targetUrl = this.getAttribute("href");
+            document.querySelectorAll('a').forEach(anchor => {
+                anchor.addEventListener("click", function (e) {
+                    const targetUrl = this.getAttribute("href");
 
-                // Ignorar se for apenas âncora (#) ou link para nova aba
-                if (!targetUrl || targetUrl === "#" || this.target === "_blank") return;
+                    if (!targetUrl || targetUrl === "#" || this.target === "_blank") return;
 
-                e.preventDefault();
-                document.body.classList.add("page-exit");
+                    e.preventDefault();
+                    document.body.classList.add("page-exit");
 
-                setTimeout(() => {
-                    window.location.href = targetUrl;
-                }, 200); // Tempo idêntico ao da animação de saída
+                    setTimeout(() => {
+                        window.location.href = targetUrl;
+                    }, 400); // Sincronizado com o novo tempo de transição
+                });
             });
         });
-    });
-</script>
+    </script>
 
 </body>
 </html>
