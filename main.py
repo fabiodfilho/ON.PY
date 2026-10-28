@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, Response, jsonify
 from Controller.csv_controller import processar_geracao_csv
-from Controller.views import init_ofertas_routes
+from Controller.views import init_ofertas_routes, shortcut_periodos_bp
 
 app = Flask(__name__, 
             template_folder='View/templates', 
@@ -51,6 +51,7 @@ def gerar_csv():
     )
 
 init_ofertas_routes(app)
+app.register_blueprint(shortcut_periodos_bp)
 
 if __name__ == '__main__':
     app.run(debug=True)
