@@ -11,15 +11,15 @@ def index():
 
 @app.route('/sis')
 def sis_page():
-    return render_template('sis.html')
+    return render_template('home.html')
 
 @app.route('/home.old')
 def home_old():
-    return render_template('index.old.html')
+    return render_template('home.html')
 
 @app.route('/sispy')
 def sispy_page():
-    return render_template('sis.html')
+    return render_template('home.html')
 
 @app.route('/gerar-csv', methods=['POST'])
 def gerar_csv():
