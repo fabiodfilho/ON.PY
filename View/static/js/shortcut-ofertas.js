@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const statusBadge = document.getElementById("statusBadge");
     const downloadContainer = document.getElementById("downloadContainer");
     const downloadBtn = document.getElementById("downloadBtn");
+    const successToast = document.getElementById("successToast");
     const apiTokenInput = document.getElementById("api_token");
     const subcontasInput = document.getElementById("subcontas");
 
@@ -110,7 +111,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         btnRun.disabled = true;
-        downloadContainer.classList.add("hidden");
+        if (downloadContainer) downloadContainer.classList.add("hidden");
+        if (successToast) successToast.classList.add("hidden");
+
         statusBadge.innerHTML =
             '<span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span> Processando...';
         consoleEl.innerHTML = "";
@@ -172,11 +175,22 @@ document.addEventListener("DOMContentLoaded", () => {
             addLog(line.replace("ERROR:", ""), "error");
         } else if (line.startsWith("DOWNLOAD:")) {
             const filename = line.replace("DOWNLOAD:", "").trim();
+            const downloadUrl = `/api/shortcuts/ofertas/download/${filename}`;
+
             if (downloadBtn) {
-                downloadBtn.href =
-                    `/api/shortcuts/ofertas/download/${filename}`;
+                downloadBtn.href = downloadUrl;
             }
-            downloadContainer.classList.remove("hidden");
+            if (downloadContainer) {
+                downloadContainer.classList.remove("hidden");
+            }
+
+            // Dispara o download automático do arquivo no navegador
+            window.location.href = downloadUrl;
+
+            // Exibe o Toast com a instrução para o upload SIS
+            if (successToast) {
+                successToast.classList.remove("hidden");
+            }
         }
     }
 
