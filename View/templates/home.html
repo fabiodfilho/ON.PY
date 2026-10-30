@@ -49,13 +49,11 @@
 </script>
 
 <style>
-    /* Suavizador global para transição de saída da página */
-    body {
-        transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
-    }
-    .page-exit {
+    /* Mantém o footer fixo durante a transição de saída */
+    .page-exit main {
         opacity: 0 !important;
         transform: translateY(-8px) scale(0.99) !important;
+        transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
     }
 </style>
 </head>
@@ -116,7 +114,33 @@
                 </div>
             </a>
 
-            <!-- Card 2: auditoria.py (Em breve) -->
+
+
+             <!-- Card 3: Shortcuts.py (Ativo) -->
+            <a href="/shortcuts" class="group relative bg-brand-600 hover:bg-brand-700 rounded-2xl p-6 text-white transition-all duration-300 transform hover:-translate-y-1.5 shadow-xl shadow-brand-600/20 hover:shadow-2xl hover:shadow-brand-600/30 border border-brand-500/30 flex flex-col justify-between min-h-[220px]">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/10 group-hover:bg-white/20 transition-colors">
+                            <img src="/static/images/iconlogoshort.svg" alt="Ícone Shotcuts" class="w-5 h-5">
+                        </div>
+                        <img src="/static/images/shortcutsicon.svg" alt="Shotcuts.py" class="h-7 w-auto">
+                    </div>
+                    <p class="text-sm text-purple-100 font-medium leading-relaxed">
+                        Funções automatizadas de atualização de dados diretamente no Canvas LMS.
+                    </p>
+                </div>
+                
+                <div class="flex justify-end mt-6">
+                    <div class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-brand-700 transition-all duration-300">
+                        <svg class="w-4 h-4 text-white group-hover:text-brand-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                        </svg>
+                    </div>
+                </div>
+            </a>
+
+
+            <!-- Card 3: auditoria.py (Em breve) -->
             <div class="relative bg-brand-600/90 rounded-2xl p-6 text-white shadow-lg border border-brand-500/20 flex flex-col justify-between min-h-[220px]">
                 <div>
                     <div class="flex items-center justify-between mb-4">
@@ -131,13 +155,17 @@
                 </div>
                 
                 <div class="flex justify-end mt-6">
-                    <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold tracking-wider bg-white/10 backdrop-blur-md text-purple-200 border border-white/10">
+                    <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold tracking-wider bg-white/20 backdrop-blur-md text-purple-200 border border-white/100">
                         EM BREVE
                     </span>
                 </div>
-            </div>
+            </div>                    
 
-            <!-- Card 3: plan.py (Em breve) -->
+
+
+
+            <!--
+            
             <div class="relative bg-brand-600/90 rounded-2xl p-6 text-white shadow-lg border border-brand-500/20 flex flex-col justify-between min-h-[220px]">
                 <div>
                     <div class="flex items-center justify-between mb-4">
@@ -158,23 +186,19 @@
                 </div>
             </div>
 
+            -->
+
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="w-full bg-brand-footer border-t border-slate-800 py-6 px-4 sm:px-6 lg:px-8 mt-auto">
-        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <img class="h-8 w-auto" src="/static/images/Logo_on_py_vertical.svg" alt="on.py">
-            </div>
-            <p class="text-xs text-slate-400 font-medium">
-                Versão beta 1.0 &bull; Powered by <span class="text-purple-300 hover:text-white transition-colors">@fabiodfilho</span>
-            </p>
-        </div>
-    </footer>
+    {% include "components/footer.html" %}
 
     <script>
     // Intercepta cliques nos links internos para efeito Smooth Exit
+    window.addEventListener("pageshow", () => {
+        document.body.classList.remove("page-exit");
+    });
+
     document.addEventListener("DOMContentLoaded", () => {
         document.body.classList.remove("page-exit");
 
