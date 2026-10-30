@@ -13,8 +13,10 @@ from flask import (
 
 from Model.ofertas_engine import executar_extracao_ofertas
 from Model.services.canvas_periodos_service import CanvasPeriodosService
+from Model.services.canvas_inativar_service import CanvasInativarService
 
 shortcut_periodos_bp = Blueprint("shortcut_periodos", __name__)
+shortcut_inativar_bp = Blueprint("shortcut_inativar", __name__)
 
 
 @shortcut_periodos_bp.route("/shortcuts/periodos", methods=["GET"])
@@ -105,3 +107,29 @@ def init_ofertas_routes(app):
             filename,
             as_attachment=True,
         )
+
+
+@shortcut_inativar_bp.route("/shortcuts/inativar", methods=["GET"])
+def render_inativar_view():
+    """Renderiza a view principal do atalho de inativação."""
+    return render_template("shortcut-inativar.html")
+
+
+@shortcut_inativar_bp.route("/api/shortcuts/inativar/execute", methods=["POST"])
+def execute_inativar_update():
+    """Processa a inativação e despublicação com streaming NDJSON."""
+    payload = request.get_json() or {}
+
+    api_token = payload.get("api_token", "").strip()
+    alvos = payload.get("alvos", "").strip()
+
+    if not api_token or not alvos:
+        return jsonify({"error": "Preencha todos os campos obrigatórios."}), 400
+
+    service = CanvasInativarService(api_token=api_token)
+    stream_generator = service.inativar_e_despublicar_stream(alvos_raw=alvos)
+
+    return Response(
+        stream_with_context(stream_generator),
+        mimetype="application/x-ndjson",
+    )

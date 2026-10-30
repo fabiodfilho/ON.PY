@@ -10,11 +10,12 @@ class CanvasPeriodosService:
     def __init__(
         self,
         api_token: str,
-        base_url: str = "https://unifacisa.beta.instructure.com",
+        base_url: str = "https://unifacisa.instructure.com",
     ):
         self.base_url = base_url.rstrip("/")
         self.headers = {
             "Authorization": f"Bearer {api_token}",
+            "Authorization": "Bearer " + api_token,
             "Content-Type": "application/json",
             "Accept": "application/json",
         }

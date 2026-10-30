@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, Response, jsonify
 from Controller.csv_controller import processar_geracao_csv
-from Controller.views import init_ofertas_routes, shortcut_periodos_bp
+from Controller.views import init_ofertas_routes, shortcut_periodos_bp, shortcut_inativar_bp
 
 app = Flask(__name__, 
             template_folder='View/templates', 
@@ -25,6 +25,10 @@ def sis_page():
 @app.route('/home.old')
 def home_old():
     return render_template('index.old.html')
+
+@app.route('/shortcuts/inativar')
+def inativar_page():
+    return render_template('shortcut-inativar.html')
 
 @app.route('/sispy')
 def sispy_page():
@@ -52,6 +56,7 @@ def gerar_csv():
 
 init_ofertas_routes(app)
 app.register_blueprint(shortcut_periodos_bp)
+app.register_blueprint(shortcut_inativar_bp)
 
 if __name__ == '__main__':
     app.run(debug=True)
