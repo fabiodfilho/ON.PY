@@ -1,4 +1,3 @@
-import os
 import re
 
 from flask import (
@@ -7,7 +6,6 @@ from flask import (
     jsonify,
     render_template,
     request,
-    send_from_directory,
     stream_with_context,
 )
 
@@ -64,9 +62,6 @@ def init_routes(app):
 
 
 def init_ofertas_routes(app):
-    temp_reports_dir = os.path.join(app.root_path, "temp_reports")
-    os.makedirs(temp_reports_dir, exist_ok=True)
-
     @app.route("/shortcuts/ofertas")
     def page_shortcut_ofertas():
         return render_template("shortcut-ofertas.html")
@@ -96,17 +91,8 @@ def init_ofertas_routes(app):
         logs = executar_extracao_ofertas(
             api_token,
             subcontas_ids,
-            temp_reports_dir,
         )
         return Response(stream_with_context(logs), mimetype="text/plain")
-
-    @app.route("/api/shortcuts/ofertas/download/<filename>")
-    def download_ofertas_report(filename):
-        return send_from_directory(
-            temp_reports_dir,
-            filename,
-            as_attachment=True,
-        )
 
 
 @shortcut_inativar_bp.route("/shortcuts/inativar", methods=["GET"])

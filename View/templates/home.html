@@ -220,5 +220,84 @@
     });
 </script>
 
+
+        <!-- Modal Pop-up Lançamento Beta 2.0.0 -->
+<div id="releaseModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+    <div id="releaseModalCard" class="relative max-w-lg w-full bg-white rounded-3xl shadow-2xl overflow-hidden transform scale-95 transition-all duration-300 border border-slate-100 flex flex-col max-h-[90vh]">
+        
+        <!-- Botão Fechar (Canto Superior Direito) -->
+        <button type="button" id="closeReleaseModal" class="absolute top-3 right-3 z-10 p-2 rounded-full bg-slate-900/60 hover:bg-slate-900 text-white backdrop-blur-md transition-all active:scale-90" title="Fechar">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+
+        <!-- Imagem do Anúncio -->
+        <div class="w-full overflow-y-auto">
+            <img src="/static/images/nova_versao_shortcuts.png" alt="A nova versão chegou! Beta 2.0.0" class="w-full h-auto block object-cover rounded-t-3xl">
+        </div>
+
+        <!-- Rodapé com Botão de Ação -->
+        <div class="p-4 bg-white border-t border-slate-100 flex justify-end">
+            <a href="/shortcuts" class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-lg shadow-brand-600/25 transition-all active:scale-95">
+                <span>Conhecer o shortcuts.py</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const releaseModal = document.getElementById('releaseModal');
+    const releaseModalCard = document.getElementById('releaseModalCard');
+    const closeReleaseModal = document.getElementById('closeReleaseModal');
+    
+    // Chave para controlar a visualização única no navegador
+    const STORAGE_KEY = 'has_seen_shortcuts_v2_modal';
+
+    function openModal() {
+        if (!releaseModal || !releaseModalCard) return;
+        releaseModal.classList.remove('opacity-0', 'pointer-events-none');
+        releaseModalCard.classList.remove('scale-95');
+        releaseModalCard.classList.add('scale-100');
+    }
+
+    function closeModal() {
+        if (!releaseModal || !releaseModalCard) return;
+        releaseModalCard.classList.remove('scale-100');
+        releaseModalCard.classList.add('scale-95');
+        releaseModal.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    // Exibe o modal apenas se for a primeira vez
+    if (!localStorage.getItem(STORAGE_KEY)) {
+        setTimeout(() => {
+            openModal();
+            localStorage.setItem(STORAGE_KEY, 'true');
+        }, 400); // 400ms para aguardar o carregamento suave da página
+    }
+
+    // Fechar pelo botão X
+    closeReleaseModal?.addEventListener('click', closeModal);
+
+    // Fechar ao clicar fora da caixa do modal
+    releaseModal?.addEventListener('click', (e) => {
+        if (e.target === releaseModal) {
+            closeModal();
+        }
+    });
+
+    // Fechar ao pressionar a tecla ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && releaseModal && !releaseModal.classList.contains('opacity-0')) {
+            closeModal();
+        }
+    });
+});
+</script>
+
 </body>
 </html>

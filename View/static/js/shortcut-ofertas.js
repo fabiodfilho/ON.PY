@@ -173,18 +173,22 @@ document.addEventListener("DOMContentLoaded", () => {
             addLog(line.replace("SUCCESS:", ""), "success");
         } else if (line.startsWith("ERROR:")) {
             addLog(line.replace("ERROR:", ""), "error");
-        } else if (line.startsWith("DOWNLOAD:")) {
-            const filename = line.replace("DOWNLOAD:", "").trim();
-            const downloadUrl = `/api/shortcuts/ofertas/download/${filename}`;
-
+        } else if (line.startsWith("REPORT:")) {
+            const reportData = line.replace("REPORT:", "").trim();
+            const binary = atob(reportData);
+            const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+            const reportBlob = new Blob([bytes], {
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            });
+            const downloadUrl = URL.createObjectURL(reportBlob);
             if (downloadBtn) {
                 downloadBtn.href = downloadUrl;
+                downloadBtn.download = "ofertas_canvas.xlsx";
             }
             if (downloadContainer) {
                 downloadContainer.classList.remove("hidden");
             }
 
-            // Dispara o download automático do arquivo no navegador
             window.location.href = downloadUrl;
 
             // Exibe o Toast com a instrução para o upload SIS

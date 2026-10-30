@@ -1,7 +1,7 @@
-import os
+import base64
+from io import BytesIO
 import re
 import time
-import uuid
 
 import requests
 from openpyxl import Workbook
@@ -13,7 +13,6 @@ from urllib3.util.retry import Retry
 def executar_extracao_ofertas(
     api_token,
     subcontas_ids,
-    temp_reports_dir,
     canvas_domain="unifacisa.instructure.com",
 ):
     session = requests.Session()
@@ -130,11 +129,11 @@ def executar_extracao_ofertas(
         worksheet.column_dimensions["B"].width = 120
 
     if teve_dados:
-        filename = f"ofertas_canvas_{uuid.uuid4().hex[:8]}.xlsx"
-        filepath = os.path.join(temp_reports_dir, filename)
-        workbook.save(filepath)
+        report_buffer = BytesIO()
+        workbook.save(report_buffer)
+        report_data = base64.b64encode(report_buffer.getvalue()).decode("ascii")
         yield "SUCCESS: Coleta concluída com sucesso! Relatório Excel gerado.\n"
-        yield f"DOWNLOAD:{filename}\n"
+        yield f"REPORT:{report_data}\n"
     else:
         yield (
             "LOG: Processo concluído. Nenhum código numérico foi "
