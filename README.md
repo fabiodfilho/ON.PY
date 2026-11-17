@@ -1,137 +1,168 @@
-# SISPY
+# on.py
 
-Sistema de Importação de Matrículas para SIS (Student Information System) - Aplicação Flask para gerar arquivos CSV de matrículas com mapeamento automático de códigos de cursos.
+Aplicação web em Flask para automatizar operações de integração e administração
+do Canvas LMS. O projeto reúne duas áreas:
 
-## 📋 Descrição
+- **sis.py**: gera arquivos CSV no formato de importação SIS do Canvas.
+- **shortcuts.py**: executa automações em lote no Canvas e exibe os logs em
+  tempo real.
 
-O SISPY é uma aplicação web desenvolvida em Python com Flask que facilita a importação de matrículas de alunos em sistemas SIS. O sistema lê uma planilha Excel contendo códigos de ofertas de cursos e seus respectivos SIS_IDs, permitindo que o usuário insira códigos de cursos e matrículas de alunos para gerar um arquivo CSV formatado para importação.
+## Funcionalidades
 
-### Funcionalidades Principais
-- **Mapeamento Automático**: Converte códigos de 6 dígitos de cursos para SIS_IDs válidos
-- **Interface Web Simples**: Formulário intuitivo para inserção de dados
-- **Validação Robusta**: Verifica códigos inexistentes e entradas inválidas
-- **Geração de CSV**: Produz arquivo compatível com importação SIS
-- **Tratamento de Erros**: Interrompe geração se houver problemas e informa detalhes
+### sis.py
 
-## 🚀 Instalação
+Disponível em `/sis`:
 
-### Pré-requisitos
-- Python 3.8 ou superior
-- Pip (gerenciador de pacotes Python)
+- gera `matriculas_sis.csv` com as colunas `course_id`, `user_id`, `role` e
+  `status`;
+- aceita vários blocos de cursos e usuários;
+- permite selecionar os papéis **Aluno**, **Professor** ou **Coordenador**;
+- gera uma linha para cada combinação de curso e usuário;
+- envia o arquivo diretamente para download, pronto para a importação SIS do
+  Canvas.
 
-### Passos de Instalação
+Os IDs dos cursos são informados diretamente. A versão atual não depende da
+planilha `Model/BD-OFERTAS-261.1.xlsx` para gerar o CSV.
 
-1. **Clone ou baixe o projeto**
-   ```bash
-   cd "seu/diretorio"
-   ```
+### shortcuts.py
 
-2. **Instale as dependências**
-   ```bash
-   pip install -r requirements.txt
-   ```
+Disponível em `/shortcuts`, com as seguintes automações:
 
-3. **Certifique-se de que o arquivo de banco de dados está presente**
-   - O arquivo `Model/BD-OFERTAS-261.1.xlsx` deve estar localizado na pasta `Model/`
-   - Este arquivo contém as colunas `Nome_Curso` e `SIS_ID`
+- **Extração de Ofertas** (`/shortcuts/codigos-ofertas`): consulta cursos
+  ativos e despublicados por subconta e gera um relatório Excel com os códigos
+  encontrados.
+- **Atualização de Períodos Letivos** (`/shortcuts/periodos`): altera em lote
+  o período letivo e, opcionalmente, as datas de início e fim de cursos
+  selecionados por subconta ou código.
+- **Inativar e Despublicar** (`/shortcuts/inativar`): inativa as matrículas
+  dos cursos informados e despublica os cursos.
+- **Auditoria** (`/shortcuts/auditoria`): analisa tarefas publicadas, grupos de
+  tarefas e notas pendentes, gerando um relatório Excel por subconta.
 
-4. **Execute a aplicação**
-   ```bash
-   python main.py
-   ```
+As automações do Canvas recebem o token de API apenas durante a execução,
+consultam o domínio `unifacisa.instructure.com` e transmitem o progresso em
+streaming. O token não deve ser salvo no código, em arquivos do projeto ou em
+commits.
 
-5. **Acesse no navegador**
-   - Abra `http://127.0.0.1:5000`
+## Requisitos
 
-## 📖 Uso
+- Python 3.10 ou superior;
+- pip;
+- acesso à API do Canvas para usar os atalhos;
+- Docker e Docker Compose, caso a execução seja feita em contêiner.
 
-1. **Página Inicial**: Acesse a URL e você verá um formulário com campos para códigos de cursos e matrículas.
+## Execução local
 
-2. **Inserir Dados**:
-   - **Códigos de Cursos**: Digite códigos de 6 dígitos (ex: `221016`), um por linha
-   - **Matrículas**: Digite números de matrícula dos alunos, um por linha
+No Windows, PowerShell ou em outro terminal:
 
-3. **Gerar CSV**: Clique em "Gerar CSV" para baixar o arquivo `matriculas_sis.csv`
-
-4. **Tratamento de Erros**: Se houver códigos inválidos ou não encontrados, a aplicação exibirá uma página de erro com detalhes.
-
-## 🏗️ Estrutura do Projeto
-
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python main.py
 ```
+
+Depois, acesse <http://127.0.0.1:5000>.
+
+Para executar com o servidor de produção incluído no projeto:
+
+```powershell
+gunicorn --workers 3 --bind 0.0.0.0:8000 main:app
+```
+
+> O `main.py` inicia o Flask em modo de desenvolvimento (`debug=True`). Use
+> Gunicorn ou outro servidor WSGI em produção.
+
+## Execução com Docker
+
+```powershell
+docker compose up --build
+```
+
+A aplicação ficará disponível em <http://127.0.0.1:8000>. Para encerrar:
+
+```powershell
+docker compose down
+```
+
+O contêiner usa Python 3.10, instala as dependências de
+`requirements.txt` e inicia a aplicação com Gunicorn.
+
+## Rotas principais
+
+| Rota | Método | Descrição |
+| --- | --- | --- |
+| `/` | GET | Página inicial do on.py |
+| `/sis` | GET | Interface de geração do CSV SIS |
+| `/gerar-csv` | POST | Gera e baixa o CSV SIS |
+| `/shortcuts` | GET | Lista de automações |
+| `/shortcuts/codigos-ofertas` | GET | Interface de extração de ofertas |
+| `/shortcuts/periodos` | GET | Interface de atualização de períodos |
+| `/shortcuts/inativar` | GET | Interface de inativação e despublicação |
+| `/shortcuts/auditoria` | GET | Interface de auditoria |
+
+As APIs de execução dos atalhos são:
+
+- `POST /api/shortcuts/ofertas/executar` — formulário com `api_token` e
+  `subcontas`;
+- `POST /api/shortcuts/periodos/execute` — JSON com `api_token`, `term_id`,
+  `alvos`, `target_type` e datas opcionais;
+- `POST /api/shortcuts/inativar/execute` — JSON com `api_token` e `alvos`;
+- `POST /api/shortcuts/auditoria/execute` — JSON com `api_token` e
+  `subcontas`.
+
+As respostas dos atalhos são transmitidas como texto ou NDJSON, conforme a
+funcionalidade, para que a interface possa mostrar os logs durante a execução.
+
+## Estrutura do projeto
+
+```text
 SISPY/
-├── main.py                    # Ponto de entrada da aplicação Flask
-├── requirements.txt           # Dependências Python
-├── README.md                  # Este arquivo
+├── main.py                         # Criação da aplicação e rotas de páginas
+├── requirements.txt                # Dependências Python
+├── Dockerfile                      # Imagem de produção
+├── docker-compose.yml              # Execução local via Docker Compose
 ├── Controller/
-│   ├── __init__.py
-│   ├── csv_controller.py      # Lógica de processamento e geração do CSV
-│   └── views.py               # (Reservado para futuras rotas)
+│   ├── views.py                    # Rotas das páginas e APIs
+│   └── csv_controller.py           # Geração do CSV SIS
 ├── Model/
-│   ├── excel_engine.py        # Carregamento e mapeamento do banco Excel
-│   └── BD-OFERTAS-261.1.xlsx  # Banco de dados com códigos e SIS_IDs
+│   ├── ofertas_engine.py           # Extração de ofertas do Canvas
+│   └── services/
+│       ├── canvas_periodos_service.py
+│       ├── canvas_inativar_service.py
+│       └── canvas_auditoria_service.py
 └── View/
-    ├── static/
-    │   ├── style.css          # Estilos CSS da interface
-    │   └── images/            # Imagens (se houver)
-    └── templates/
-        └── index.html         # Template HTML do formulário
+    ├── templates/                  # Interfaces HTML
+    └── static/                     # CSS, JavaScript e imagens
 ```
 
-## 🔧 Como Funciona
+## Dependências
 
-### 1. Carregamento do Banco de Dados (`Model/excel_engine.py`)
-- Carrega uma vez o arquivo Excel `BD-OFERTAS-261.1.xlsx`
-- Mapeia códigos de 6 dígitos (extraídos da coluna `Nome_Curso`) para `SIS_ID`
-- Exemplo: `221016` → `11661021221016102000126221016`
+- **Flask**: servidor web e roteamento;
+- **Gunicorn**: servidor WSGI para produção;
+- **Requests**: comunicação com a API do Canvas;
+- **Pandas** e **OpenPyXL**: leitura e geração de planilhas Excel.
 
-### 2. Processamento da Solicitação (`Controller/csv_controller.py`)
-- Recebe listas de códigos de cursos e matrículas
-- Para cada combinação curso-aluno:
-  - Normaliza o código (extrai apenas dígitos, pega primeiros 6)
-  - Busca o SIS_ID correspondente no banco
-  - Valida entradas e gera erros se necessário
-  - Escreve linha no CSV: `[SIS_ID, matricula, "student", "active"]`
+Instale todas com:
 
-### 3. Interface Web (`main.py`)
-- Define rotas Flask (`/` para formulário, `/gerar-csv` para processamento)
-- Renderiza template HTML
-- Retorna CSV para download ou página de erro
+```powershell
+python -m pip install -r requirements.txt
+```
 
-### 4. Validações Implementadas
-- Códigos devem ter pelo menos 6 dígitos numéricos
-- Códigos devem existir no banco de dados
-- Blocos de cursos e matrículas não podem estar vazios
-- Se qualquer erro for encontrado, a geração é interrompida
+## Observações operacionais
 
-## 📦 Dependências
+- Use um token do Canvas com as permissões necessárias para cada automação.
+- Confirme os IDs de cursos, subcontas e períodos antes de executar operações
+  em lote.
+- As ações de inativação e despublicação alteram dados no Canvas e devem ser
+  executadas somente após a conferência dos alvos.
+- A aplicação usa o domínio padrão da Unifacisa definido nos serviços. Para
+  apontar para outro ambiente Canvas, ajuste a configuração dos serviços antes
+  da implantação.
 
-- **Flask**: Framework web
-- **Pandas**: Manipulação de dados Excel
-- **OpenPyXL**: Leitura de arquivos Excel (.xlsx)
+## Contribuição
 
-Instaladas via `pip install -r requirements.txt`
-
-## 🐛 Solução de Problemas
-
-### Erro: "Código de curso não encontrado no banco"
-- Verifique se o código digitado existe na planilha Excel
-- Certifique-se de que a coluna `Nome_Curso` começa com o código de 6 dígitos
-
-### Erro: "colunas esperadas não encontradas"
-- Verifique se o arquivo Excel tem as colunas `Nome_Curso` e `SIS_ID`
-- O arquivo deve estar em `Model/BD-OFERTAS-261.1.xlsx`
-
-### Aplicação não inicia
-- Confirme que todas as dependências estão instaladas
-- Verifique se a porta 5000 está livre
-
-## 🤝 Contribuição
-
-Para contribuir:
-1. Faça fork do projeto
-2. Crie uma branch para sua feature
-3. Commit suas mudanças
-4. Push para a branch
-5. Abra um Pull Request
-
-
+1. Crie uma branch para a alteração.
+2. Faça mudanças focadas e atualize a documentação relacionada.
+3. Valide a execução local ou via Docker.
+4. Abra um Pull Request descrevendo o comportamento alterado.

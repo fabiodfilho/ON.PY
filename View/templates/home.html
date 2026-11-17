@@ -116,7 +116,7 @@
 
 
 
-             <!-- Card 3: Shortcuts.py (Ativo) -->
+             <!-- Card 2: Shortcuts.py (Ativo) -->
             <a href="/shortcuts" class="group relative bg-brand-600 hover:bg-brand-700 rounded-2xl p-6 text-white transition-all duration-300 transform hover:-translate-y-1.5 shadow-xl shadow-brand-600/20 hover:shadow-2xl hover:shadow-brand-600/30 border border-brand-500/30 flex flex-col justify-between min-h-[220px]">
                 <div>
                     <div class="flex items-center justify-between mb-4">
@@ -139,30 +139,28 @@
                 </div>
             </a>
 
-
-            <!-- Card 3: auditoria.py (Em breve) -->
-            <div class="relative bg-brand-600/90 rounded-2xl p-6 text-white shadow-lg border border-brand-500/20 flex flex-col justify-between min-h-[220px]">
+                         <!-- Card 3: Auditoria.py (Ativo) -->
+            <a href="/auditoria" class="group relative bg-brand-600 hover:bg-brand-700 rounded-2xl p-6 text-white transition-all duration-300 transform hover:-translate-y-1.5 shadow-xl shadow-brand-600/20 hover:shadow-2xl hover:shadow-brand-600/30 border border-brand-500/30 flex flex-col justify-between min-h-[220px]">
                 <div>
                     <div class="flex items-center justify-between mb-4">
-                        <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/10">
+                        <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/10 group-hover:bg-white/20 transition-colors">
                             <img src="/static/images/Vector-1.svg" alt="Ícone Auditoria" class="w-5 h-5">
                         </div>
                         <img src="/static/images/Group_209.svg" alt="auditoria.py" class="h-5 w-auto">
                     </div>
-                    <p class="text-sm text-purple-100/90 font-medium leading-relaxed">
+                    <p class="text-sm text-purple-100 font-medium leading-relaxed">
                         Gere relatório de tarefas avaliadas e no grupo de envio correto.
                     </p>
                 </div>
                 
                 <div class="flex justify-end mt-6">
-                    <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold tracking-wider bg-white/20 backdrop-blur-md text-purple-200 border border-white/100">
-                        EM BREVE
-                    </span>
+                    <div class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-brand-700 transition-all duration-300">
+                        <svg class="w-4 h-4 text-white group-hover:text-brand-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                        </svg>
+                    </div>
                 </div>
-            </div>                    
-
-
-
+            </a>
 
             <!--
             
@@ -194,7 +192,6 @@
     {% include "components/footer.html" %}
 
     <script>
-    // Intercepta cliques nos links internos para efeito Smooth Exit
     window.addEventListener("pageshow", () => {
         document.body.classList.remove("page-exit");
     });
@@ -206,7 +203,6 @@
             anchor.addEventListener("click", function (e) {
                 const targetUrl = this.getAttribute("href");
 
-                // Ignorar se for apenas âncora (#) ou link para nova aba
                 if (!targetUrl || targetUrl === "#" || this.target === "_blank") return;
 
                 e.preventDefault();
@@ -214,40 +210,12 @@
 
                 setTimeout(() => {
                     window.location.href = targetUrl;
-                }, 200); // Tempo idêntico ao da animação de saída
+                }, 200); 
             });
         });
     });
 </script>
 
-
-        <!-- Modal Pop-up Lançamento Beta 2.0.0 -->
-<div id="releaseModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
-    <div id="releaseModalCard" class="relative max-w-lg w-full bg-white rounded-3xl shadow-2xl overflow-hidden transform scale-95 transition-all duration-300 border border-slate-100 flex flex-col max-h-[90vh]">
-        
-        <!-- Botão Fechar (Canto Superior Direito) -->
-        <button type="button" id="closeReleaseModal" class="absolute top-3 right-3 z-10 p-2 rounded-full bg-slate-900/60 hover:bg-slate-900 text-white backdrop-blur-md transition-all active:scale-90" title="Fechar">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-        </button>
-
-        <!-- Imagem do Anúncio -->
-        <div class="w-full overflow-y-auto">
-            <img src="/static/images/nova_versao_shortcuts.png" alt="A nova versão chegou! Beta 2.0.0" class="w-full h-auto block object-cover rounded-t-3xl">
-        </div>
-
-        <!-- Rodapé com Botão de Ação -->
-        <div class="p-4 bg-white border-t border-slate-100 flex justify-end">
-            <a href="/shortcuts" class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-lg shadow-brand-600/25 transition-all active:scale-95">
-                <span>Conhecer o shortcuts.py</span>
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                </svg>
-            </a>
-        </div>
-    </div>
-</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -255,7 +223,6 @@
     const releaseModalCard = document.getElementById('releaseModalCard');
     const closeReleaseModal = document.getElementById('closeReleaseModal');
     
-    // Chave para controlar a visualização única no navegador
     const STORAGE_KEY = 'has_seen_shortcuts_v2_modal';
 
     function openModal() {
@@ -277,20 +244,18 @@
         setTimeout(() => {
             openModal();
             localStorage.setItem(STORAGE_KEY, 'true');
-        }, 400); // 400ms para aguardar o carregamento suave da página
+        }, 400); 
     }
 
-    // Fechar pelo botão X
+    
     closeReleaseModal?.addEventListener('click', closeModal);
 
-    // Fechar ao clicar fora da caixa do modal
     releaseModal?.addEventListener('click', (e) => {
         if (e.target === releaseModal) {
             closeModal();
         }
     });
 
-    // Fechar ao pressionar a tecla ESC
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && releaseModal && !releaseModal.classList.contains('opacity-0')) {
             closeModal();

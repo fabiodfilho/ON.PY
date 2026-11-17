@@ -12,10 +12,11 @@ from flask import (
 from Model.ofertas_engine import executar_extracao_ofertas
 from Model.services.canvas_periodos_service import CanvasPeriodosService
 from Model.services.canvas_inativar_service import CanvasInativarService
+from Model.services.canvas_auditoria_service import CanvasAuditoriaService
 
 shortcut_periodos_bp = Blueprint("shortcut_periodos", __name__)
 shortcut_inativar_bp = Blueprint("shortcut_inativar", __name__)
-
+shortcut_auditoria_bp = Blueprint("shortcut_auditoria", __name__)
 
 @shortcut_periodos_bp.route("/shortcuts/periodos", methods=["GET"])
 def render_periodos_view():
@@ -114,6 +115,30 @@ def execute_inativar_update():
 
     service = CanvasInativarService(api_token=api_token)
     stream_generator = service.inativar_e_despublicar_stream(alvos_raw=alvos)
+
+    return Response(
+        stream_with_context(stream_generator),
+        mimetype="application/x-ndjson",
+    )
+
+@shortcut_auditoria_bp.route("/auditoria", methods=["GET"])
+def render_auditoria_view():
+    return render_template("auditoria.html")
+
+
+
+@shortcut_auditoria_bp.route("/api/auditoria/execute", methods=["POST"])
+def execute_auditoria():
+    payload = request.get_json() or {}
+
+    api_token = payload.get("api_token", "").strip()
+    subcontas = payload.get("subcontas", "").strip()
+
+    if not api_token or not subcontas:
+        return jsonify({"error": "Informe o Token de API e pelo menos uma subconta."}), 400
+
+    service = CanvasAuditoriaService(api_token=api_token)
+    stream_generator = service.auditar_cursos_stream(subcontas_raw=subcontas)
 
     return Response(
         stream_with_context(stream_generator),
