@@ -27,6 +27,5 @@ def carregar_banco_dados():
     
     return banco_procura
 
-# Singleton para carregar uma vez só
 BANCO_OFERTAS = carregar_banco_dados()
 print(f"--- BANCO CARREGADO ({len(BANCO_OFERTAS)} itens) ---")

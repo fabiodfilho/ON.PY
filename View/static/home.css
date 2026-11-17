@@ -100,7 +100,7 @@ body.onpy-home {
 
 .onpy-card {
     position: relative;
-    padding-bottom: 12px; /* room for the offset shadow layer */
+    padding-bottom: 12px;
 }
 
 .onpy-card-inner {
@@ -115,7 +115,6 @@ body.onpy-home {
     color: #fff;
 }
 
-/* the raised, brighter layer visible behind/under each card */
 .onpy-card::after {
     content: "";
     position: absolute;

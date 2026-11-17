@@ -12,12 +12,10 @@ document.addEventListener("DOMContentLoaded", () => {
     let lastReportBase64 = null;
     let lastReportFilename = "auditoria_unifacisa_multicontas.xlsx";
 
-    // Mostrar / ocultar token
     toggleTokenBtn.addEventListener("click", () => {
         apiTokenInput.type = apiTokenInput.type === "password" ? "text" : "password";
     });
 
-    // Limpar logs
     btnClearLogs.addEventListener("click", () => {
         logConsole.innerHTML = '<p class="text-slate-500">// Console limpo.</p>';
     });

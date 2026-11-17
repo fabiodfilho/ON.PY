@@ -39,7 +39,6 @@ body {
     margin: 0 0 32px;
 }
 
-/* Card  */
 .onpy-tool-card {
     background: #ffffff;
     border: 2px solid var(--purple-deep);
@@ -149,7 +148,6 @@ body {
     display: block;
 }
 
-/*  Actions */
 .actions {
     display: flex;
     align-items: center;

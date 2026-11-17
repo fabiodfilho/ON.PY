@@ -32,7 +32,6 @@
                         footer: '#080121'
                     }
                 },
-                // NOVAS ANIMAÇÕES
                 keyframes: {
                     fadeInUp: {
                         '0%': { opacity: '0', transform: 'translateY(16px)' },
@@ -49,7 +48,6 @@
 </script>
 
 <style>
-    /* Mantém o footer fixo durante a transição de saída */
     .page-exit main {
         opacity: 0 !important;
         transform: translateY(-8px) scale(0.99) !important;
@@ -59,10 +57,8 @@
 </head>
 <body class="bg-[#F8F9FD] text-slate-900 font-sans min-h-full flex flex-col justify-between antialiased selection:bg-brand-500 selection:text-white relative overflow-x-hidden">
 
-    <!-- Orbes sutis de fundo para profundidade visual -->
     <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-gradient-to-tr from-brand-500/15 via-purple-300/20 to-transparent blur-3xl pointer-events-none -z-10 rounded-full"></div>
 
-    <!-- Header / Navbar -->
     <header class="w-full pt-6 px-4 sm:px-6 lg:px-8 flex justify-center">
         <nav class="bg-white/80 backdrop-blur-md border border-slate-200/80 shadow-sm rounded-full px-8 py-3 flex items-center justify-between w-full max-w-4xl transition-all hover:shadow-md">
             <a href="/" class="flex items-center">
@@ -77,7 +73,6 @@
         </nav>
     </header>
 
-    <!-- Hero Section -->
     <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16 flex flex-col items-center justify-center text-center animate-fade-in-up">
         <div class="max-w-3xl space-y-4">
         <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight sm:leading-tight">
@@ -88,10 +83,8 @@
         </p>
         </div>
 
-        <!-- Grid de Cards de Ferramentas -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 w-full max-w-5xl mt-12 text-left ">
 
-            <!-- Card 1: sis.py (Ativo) -->
             <a href="/sis" class="group relative bg-brand-600 hover:bg-brand-700 rounded-2xl p-6 text-white transition-all duration-300 transform hover:-translate-y-1.5 shadow-xl shadow-brand-600/20 hover:shadow-2xl hover:shadow-brand-600/30 border border-brand-500/30 flex flex-col justify-between min-h-[220px]">
                 <div>
                     <div class="flex items-center justify-between mb-4">
@@ -116,7 +109,6 @@
 
 
 
-             <!-- Card 2: Shortcuts.py (Ativo) -->
             <a href="/shortcuts" class="group relative bg-brand-600 hover:bg-brand-700 rounded-2xl p-6 text-white transition-all duration-300 transform hover:-translate-y-1.5 shadow-xl shadow-brand-600/20 hover:shadow-2xl hover:shadow-brand-600/30 border border-brand-500/30 flex flex-col justify-between min-h-[220px]">
                 <div>
                     <div class="flex items-center justify-between mb-4">
@@ -139,7 +131,6 @@
                 </div>
             </a>
 
-                         <!-- Card 3: Auditoria.py (Ativo) -->
             <a href="/auditoria" class="group relative bg-brand-600 hover:bg-brand-700 rounded-2xl p-6 text-white transition-all duration-300 transform hover:-translate-y-1.5 shadow-xl shadow-brand-600/20 hover:shadow-2xl hover:shadow-brand-600/30 border border-brand-500/30 flex flex-col justify-between min-h-[220px]">
                 <div>
                     <div class="flex items-center justify-between mb-4">
@@ -161,30 +152,6 @@
                     </div>
                 </div>
             </a>
-
-            <!--
-            
-            <div class="relative bg-brand-600/90 rounded-2xl p-6 text-white shadow-lg border border-brand-500/20 flex flex-col justify-between min-h-[220px]">
-                <div>
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/10">
-                            <img src="/static/images/Vector.svg" alt="Ícone Plan" class="w-5 h-5">
-                        </div>
-                        <img src="/static/images/Group_217.svg" alt="plan.py" class="h-5 w-auto">
-                    </div>
-                    <p class="text-sm text-purple-100/90 font-medium leading-relaxed">
-                        Planejamento e estruturação automatizada de novos fluxos acadêmicos.
-                    </p>
-                </div>
-                
-                <div class="flex justify-end mt-6">
-                    <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold tracking-wider bg-white/10 backdrop-blur-md text-purple-200 border border-white/10">
-                        EM BREVE
-                    </span>
-                </div>
-            </div>
-
-            -->
 
         </div>
     </main>
@@ -239,7 +206,6 @@
         releaseModal.classList.add('opacity-0', 'pointer-events-none');
     }
 
-    // Exibe o modal apenas se for a primeira vez
     if (!localStorage.getItem(STORAGE_KEY)) {
         setTimeout(() => {
             openModal();

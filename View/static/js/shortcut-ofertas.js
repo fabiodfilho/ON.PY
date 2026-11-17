@@ -191,7 +191,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             window.location.href = downloadUrl;
 
-            // Exibe o Toast com a instrução para o upload SIS
             if (successToast) {
                 successToast.classList.remove("hidden");
             }

@@ -1,4 +1,3 @@
-/* Variáveis e Reset restritos apenas à página SISpy */
 .sispy-page {
     --purple: #6C3BFF;
     --bg-dark: radial-gradient(circle at top, #1a0f4a, #05010f);
@@ -6,7 +5,7 @@
     --text: #111;
     --danger: #ff4d4d; 
     
-    font-family: 'Montserrat', sans-serif; /* Atualizado para a fonte que você importou */
+    font-family: 'Montserrat', sans-serif;
     background: var(--bg-dark);
     min-height: 100vh;
     display: flex;
@@ -17,7 +16,6 @@
     margin: 0;
 }
 
-/* Aplica o box-sizing e zera margens apenas nos elementos dentro desta página */
 .sispy-page * {
     margin: 0;
     padding: 0;
