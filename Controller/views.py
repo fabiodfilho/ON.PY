@@ -49,7 +49,14 @@ def execute_periodos_update():
         end_at=end_at,
     )
 
-    return Response(stream_with_context(stream_generator), mimetype="application/x-ndjson")
+    return Response(
+        stream_with_context(stream_generator),
+        mimetype="application/x-ndjson",
+        headers={
+            "Cache-Control": "no-cache, no-transform",
+            "X-Accel-Buffering": "no",
+        },
+    )
 
 
 def init_routes(app):
