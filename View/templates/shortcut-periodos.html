@@ -120,7 +120,7 @@
                     
                     <button type="submit" id="btnRun" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md shadow-brand-600/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                        <span>Atualizar Períodos</span>
+                        <span id="btnRunLabel">Atualizar Períodos</span>
                     </button>
                 </div>
 
@@ -130,6 +130,16 @@
                 <div class="flex items-center justify-between text-xs text-slate-500 font-bold uppercase tracking-wider">
                     <span>Console de Execução (Logs)</span>
                     <button type="button" id="btnClearLogs" class="text-slate-400 hover:text-slate-600 font-normal">Limpar logs</button>
+                </div>
+
+                <div id="progressContainer" class="space-y-1.5" aria-live="polite">
+                    <div class="flex items-center justify-between text-xs text-slate-500">
+                        <span id="progressLabel">Progresso da atualização</span>
+                        <span id="progressText">Aguardando execução</span>
+                    </div>
+                    <div class="h-2.5 w-full overflow-hidden rounded-full bg-slate-200" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Progresso da atualização">
+                        <div id="progressBar" class="h-full w-0 rounded-full bg-brand-600 transition-all duration-300"></div>
+                    </div>
                 </div>
 
                 <div id="logConsole" class="w-full h-60 bg-slate-900 rounded-2xl p-4 text-xs font-mono text-emerald-400 overflow-y-auto space-y-1 shadow-inner leading-relaxed">
