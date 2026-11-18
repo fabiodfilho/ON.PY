@@ -54,9 +54,7 @@ def execute_periodos_update():
         mimetype="application/x-ndjson",
         headers={
             "Cache-Control": "no-cache, no-transform",
-            "Pragma": "no-cache",
             "X-Accel-Buffering": "no",
-            "X-Accel-Expires": "0",
         },
     )
 
