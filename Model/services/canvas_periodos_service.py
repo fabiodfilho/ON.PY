@@ -101,7 +101,7 @@ class CanvasPeriodosService:
     ):
         targets = self._parse_ids(alvos_raw)
 
-        yield json.dumps({"type": "info", "message": f"Conectado ao Canvas Beta ({self.base_url})..."}) + "\n"
+        yield json.dumps({"type": "info", "message": f"Conectado ao Canvas ({self.base_url})..."}) + "\n"
 
         canvas_term_id, term_display = self._resolve_canvas_term_id(term_id)
         yield json.dumps({"type": "info", "message": f"Período mapeado: {term_display}"}) + "\n"
