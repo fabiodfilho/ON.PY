@@ -6,6 +6,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnClearLogs = document.getElementById('btnClearLogs');
     const btnRun = document.getElementById('btnRun');
     const statusBadge = document.getElementById('statusBadge');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const progressTrack = progressBar?.parentElement;
+    let totalCourses = 0;
+    let processedCourses = 0;
+
+    function resetProgress() {
+        totalCourses = 0;
+        processedCourses = 0;
+        progressBar.classList.remove('animate-pulse');
+        progressBar.style.width = '0%';
+        progressText.textContent = 'Aguardando execução';
+        progressTrack?.setAttribute('aria-valuenow', '0');
+    }
+
+    function setPreparingProgress() {
+        progressBar.classList.add('animate-pulse');
+        progressBar.style.width = '100%';
+        progressText.textContent = 'Preparando...';
+    }
+
+    function updateProgress() {
+        if (totalCourses <= 0) {
+            setPreparingProgress();
+            return;
+        }
+        const percentage = Math.min(100, Math.round((processedCourses / totalCourses) * 100));
+        progressBar.classList.remove('animate-pulse');
+        progressBar.style.width = `${percentage}%`;
+        progressText.textContent = `${processedCourses} / ${totalCourses} cursos (${percentage}%)`;
+        progressTrack?.setAttribute('aria-valuenow', String(percentage));
+    }
 
     toggleTokenBtn?.addEventListener('click', () => {
         const type = apiTokenInput.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -14,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     btnClearLogs?.addEventListener('click', () => {
         logConsole.innerHTML = '<p class="text-slate-500">// Console de logs limpo.</p>';
+        resetProgress();
     });
 
     function appendLog(msg, type = 'info') {
@@ -39,6 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         logConsole.innerHTML = '';
         btnRun.disabled = true;
+        resetProgress();
+        setPreparingProgress();
         setStatus('Inativando e despublicando...', 'bg-amber-400 animate-pulse');
         appendLog('Iniciando comunicação com a API do Canvas...');
 
@@ -77,8 +112,22 @@ document.addEventListener('DOMContentLoaded', () => {
                             appendLog(item.message, 'error');
                         } else if (item.type === 'done') {
                             receivedDone = true;
+                            processedCourses = totalCourses;
+                            updateProgress();
                         } else {
                             appendLog(item.message, item.type);
+
+                            const courseCountMatch = item.message.match(/Iniciando processo para (\d+) curso\(s\)\./);
+                            if (courseCountMatch) {
+                                totalCourses = Number(courseCountMatch[1]);
+                                updateProgress();
+                            }
+
+                            const courseFinishedMatch = item.message.match(/Curso (\d+) despublicado com sucesso!/);
+                            if (courseFinishedMatch) {
+                                processedCourses += 1;
+                                updateProgress();
+                            }
                         }
                     } catch (err) {
                         appendLog(line, 'info');
@@ -94,8 +143,22 @@ document.addEventListener('DOMContentLoaded', () => {
                         appendLog(item.message, 'error');
                     } else if (item.type === 'done') {
                         receivedDone = true;
+                        processedCourses = totalCourses;
+                        updateProgress();
                     } else {
                         appendLog(item.message, item.type);
+
+                        const courseCountMatch = item.message.match(/Iniciando processo para (\d+) curso\(s\)\./);
+                        if (courseCountMatch) {
+                            totalCourses = Number(courseCountMatch[1]);
+                            updateProgress();
+                        }
+
+                        const courseFinishedMatch = item.message.match(/Curso (\d+) despublicado com sucesso!/);
+                        if (courseFinishedMatch) {
+                            processedCourses += 1;
+                            updateProgress();
+                        }
                     }
                 } catch (err) {
                     appendLog(buffer, 'info');

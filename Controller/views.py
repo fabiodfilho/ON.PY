@@ -156,8 +156,10 @@ def execute_auditoria():
     service = CanvasAuditoriaService(api_token=api_token)
     stream_generator = service.auditar_cursos_stream(subcontas_raw=subcontas)
 
-    return Response(
+    response = Response(
         stream_with_context(stream_generator),
         mimetype="text/event-stream",
         headers=STREAM_HEADERS,
     )
+    response.direct_passthrough = True
+    return response

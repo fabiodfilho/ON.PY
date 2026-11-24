@@ -117,6 +117,16 @@
                     <button type="button" id="btnClearLogs" class="text-slate-400 hover:text-slate-600 font-normal">Limpar logs</button>
                 </div>
 
+                <div id="progressContainer" class="space-y-1.5" aria-live="polite">
+                    <div class="flex items-center justify-between text-xs text-slate-500">
+                        <span>Progresso da auditoria</span>
+                        <span id="progressText">Aguardando execução</span>
+                    </div>
+                    <div class="h-2.5 w-full overflow-hidden rounded-full bg-slate-200" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Progresso da auditoria">
+                        <div id="progressBar" class="h-full w-0 rounded-full bg-brand-600 transition-all duration-300"></div>
+                    </div>
+                </div>
+
                 <div id="logConsole" class="w-full h-64 bg-slate-900 rounded-2xl p-4 text-xs font-mono text-emerald-400 overflow-y-auto space-y-1 shadow-inner leading-relaxed">
                     <p class="text-slate-500">// Aguardando comando para iniciar a auditoria...</p>
                 </div>
