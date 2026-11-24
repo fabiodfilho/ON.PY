@@ -18,6 +18,12 @@ shortcut_periodos_bp = Blueprint("shortcut_periodos", __name__)
 shortcut_inativar_bp = Blueprint("shortcut_inativar", __name__)
 shortcut_auditoria_bp = Blueprint("shortcut_auditoria", __name__)
 
+STREAM_HEADERS = {
+    "X-Accel-Buffering": "no",
+    "Cache-Control": "no-cache, no-transform",
+    "Connection": "keep-alive",
+}
+
 @shortcut_periodos_bp.route("/shortcuts/periodos", methods=["GET"])
 def render_periodos_view():
     """Renderiza a view principal do atalho de períodos."""
@@ -51,11 +57,8 @@ def execute_periodos_update():
 
     return Response(
         stream_with_context(stream_generator),
-        mimetype="application/x-ndjson",
-        headers={
-            "Cache-Control": "no-cache, no-transform",
-            "X-Accel-Buffering": "no",
-        },
+        mimetype="text/event-stream",
+        headers=STREAM_HEADERS,
     )
 
 
@@ -100,7 +103,11 @@ def init_ofertas_routes(app):
             api_token,
             subcontas_ids,
         )
-        return Response(stream_with_context(logs), mimetype="text/plain")
+        return Response(
+            stream_with_context(logs),
+            mimetype="text/event-stream",
+            headers=STREAM_HEADERS,
+        )
 
 
 @shortcut_inativar_bp.route("/shortcuts/inativar", methods=["GET"])
@@ -125,7 +132,8 @@ def execute_inativar_update():
 
     return Response(
         stream_with_context(stream_generator),
-        mimetype="application/x-ndjson",
+        mimetype="text/event-stream",
+        headers=STREAM_HEADERS,
     )
 
 @shortcut_auditoria_bp.route("/auditoria", methods=["GET"])
@@ -135,6 +143,7 @@ def render_auditoria_view():
 
 
 @shortcut_auditoria_bp.route("/api/auditoria/execute", methods=["POST"])
+@shortcut_auditoria_bp.route("/api/shortcuts/auditoria/execute", methods=["POST"])
 def execute_auditoria():
     payload = request.get_json() or {}
 
@@ -149,5 +158,6 @@ def execute_auditoria():
 
     return Response(
         stream_with_context(stream_generator),
-        mimetype="application/x-ndjson",
+        mimetype="text/event-stream",
+        headers=STREAM_HEADERS,
     )
