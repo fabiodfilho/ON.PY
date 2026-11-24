@@ -86,6 +86,57 @@ document.addEventListener("DOMContentLoaded", () => {
         statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full ${colors[state]}"></span> ${text}`;
     }
 
+    async function createContentReader(body) {
+        const originalReader = body.getReader();
+        const firstChunk = await originalReader.read();
+
+        if (firstChunk.done) {
+            return originalReader;
+        }
+
+        const firstBytes = firstChunk.value;
+        const isGzip =
+            firstBytes.length >= 2 &&
+            firstBytes[0] === 0x1f &&
+            firstBytes[1] === 0x8b;
+
+        if (!isGzip) {
+            let pendingChunk = firstChunk;
+            return {
+                read: async () => {
+                    if (pendingChunk) {
+                        const chunk = pendingChunk;
+                        pendingChunk = null;
+                        return chunk;
+                    }
+                    return originalReader.read();
+                },
+            };
+        }
+
+        if (!("DecompressionStream" in window)) {
+            throw new Error("A resposta chegou comprimida, mas este navegador não suporta descompressão GZip.");
+        }
+
+        const pipe = new ReadableStream({
+            start(controller) {
+                controller.enqueue(firstBytes);
+            },
+            async pull(controller) {
+                const chunk = await originalReader.read();
+                if (chunk.done) {
+                    controller.close();
+                } else {
+                    controller.enqueue(chunk.value);
+                }
+            },
+        });
+
+        return pipe
+            .pipeThrough(new DecompressionStream("gzip"))
+            .getReader();
+    }
+
     function downloadExcel(base64Data, filename) {
         const byteCharacters = atob(base64Data);
         const byteNumbers = new Array(byteCharacters.length);
@@ -209,7 +260,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 throw new Error(errData.error || `Erro HTTP ${response.status}`);
             }
 
-            const reader = response.body.getReader();
+            const reader = await createContentReader(response.body);
             const decoder = new TextDecoder("utf-8");
             let buffer = "";
 
@@ -227,7 +278,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         const event = JSON.parse(line);
                         processEvent(event);
                     } catch (err) {
-                        appendLog(line, "log");
+                        appendLog("[AVISO] O servidor enviou dados não reconhecidos como JSON.", "error");
                     }
                 }
             }
@@ -237,7 +288,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 try {
                     processEvent(JSON.parse(buffer));
                 } catch (err) {
-                    appendLog(`[ERRO] Resposta incompleta do servidor: ${err.message}`, "error");
+                    appendLog("[ERRO] A resposta chegou incompleta ou em formato não esperado.", "error");
                     setStatus("error", "Erro na resposta");
                 }
             }

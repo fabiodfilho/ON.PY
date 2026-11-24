@@ -11,6 +11,14 @@ app = Flask(__name__,
             template_folder='View/templates', 
             static_folder='View/static')
 
+@app.after_request
+def disable_static_cache(response):
+    if request.path.startswith("/static/"):
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+    return response
+
 @app.route('/')
 def index():
     return render_template('home.html')
