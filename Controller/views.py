@@ -168,5 +168,5 @@ def execute_auditoria():
         mimetype="text/event-stream",
         headers=STREAM_HEADERS,
     )
-    response.direct_passthrough = True
+    response.headers["Content-Encoding"] = "identity"
     return response

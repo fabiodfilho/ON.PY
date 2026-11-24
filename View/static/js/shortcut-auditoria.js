@@ -195,6 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ api_token: apiToken, subcontas }),
                 signal: abortController.signal,
+                cache: "no-store",
             });
 
             if (!response.ok) {
@@ -216,8 +217,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 for (const line of lines) {
                     if (!line.trim()) continue;
-                    const event = JSON.parse(line);
-                    processEvent(event);
+                    try {
+                        const event = JSON.parse(line);
+                        processEvent(event);
+                    } catch (err) {
+                        appendLog(line, "log");
+                    }
                 }
             }
 

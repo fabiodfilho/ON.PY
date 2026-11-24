@@ -95,7 +95,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data),
-                signal: abortController.signal
+                signal: abortController.signal,
+                cache: 'no-store'
             });
 
             if (!response.ok) {
