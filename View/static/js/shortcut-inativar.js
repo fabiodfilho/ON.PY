@@ -5,12 +5,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const logConsole = document.getElementById('logConsole');
     const btnClearLogs = document.getElementById('btnClearLogs');
     const btnRun = document.getElementById('btnRun');
+    const btnRunLabel = document.getElementById('btnRunLabel');
     const statusBadge = document.getElementById('statusBadge');
     const progressBar = document.getElementById('progressBar');
     const progressText = document.getElementById('progressText');
     const progressTrack = progressBar?.parentElement;
     let totalCourses = 0;
     let processedCourses = 0;
+    let abortController = null;
+    let isRunning = false;
 
     function resetProgress() {
         totalCourses = 0;
@@ -64,6 +67,12 @@ document.addEventListener('DOMContentLoaded', () => {
         statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full ${colorClass}"></span> ${text}`;
     }
 
+    btnRun?.addEventListener('click', (e) => {
+        if (!isRunning) return;
+        e.preventDefault();
+        abortController?.abort();
+    });
+
     execForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -71,7 +80,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = Object.fromEntries(formData.entries());
 
         logConsole.innerHTML = '';
-        btnRun.disabled = true;
+        isRunning = true;
+        abortController = new AbortController();
+        btnRunLabel.textContent = 'Cancelar operação';
+        btnRun.classList.remove('bg-rose-600', 'hover:bg-rose-700');
+        btnRun.classList.add('bg-slate-600', 'hover:bg-slate-700');
         resetProgress();
         setPreparingProgress();
         setStatus('Inativando e despublicando...', 'bg-amber-400 animate-pulse');
@@ -81,7 +94,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/shortcuts/inativar/execute', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                body: JSON.stringify(data),
+                signal: abortController.signal
             });
 
             if (!response.ok) {
@@ -179,10 +193,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
         } catch (err) {
-            appendLog(`FALHA: ${err.message}`, 'error');
-            setStatus('Erro na execução', 'bg-rose-500');
+            if (abortController?.signal.aborted || err.name === 'AbortError') {
+                appendLog('Operação cancelada pelo usuário.', 'info');
+                setStatus('Operação cancelada', 'bg-slate-500');
+            } else {
+                appendLog(`FALHA: ${err.message}`, 'error');
+                setStatus('Erro na execução', 'bg-rose-500');
+            }
         } finally {
-            btnRun.disabled = false;
+            isRunning = false;
+            abortController = null;
+            btnRunLabel.textContent = 'Inativar & Despublicar';
+            btnRun.classList.remove('bg-slate-600', 'hover:bg-slate-700');
+            btnRun.classList.add('bg-rose-600', 'hover:bg-rose-700');
         }
     });
 });

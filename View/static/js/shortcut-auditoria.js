@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const subcontasInput = document.getElementById("subcontas");
     const toggleTokenBtn = document.getElementById("toggleToken");
     const btnRun = document.getElementById("btnRun");
+    const btnRunLabel = document.getElementById("btnRunLabel");
     const btnDownloadReport = document.getElementById("btnDownloadReport");
     const btnClearLogs = document.getElementById("btnClearLogs");
     const logConsole = document.getElementById("logConsole");
@@ -18,6 +19,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let processedCourses = 0;
     let subaccountBase = 0;
     let subaccountCourses = 0;
+    let abortController = null;
+    let isRunning = false;
 
     function resetProgress() {
         totalCourses = 0;
@@ -159,6 +162,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    btnRun.addEventListener("click", (e) => {
+        if (!isRunning) return;
+        e.preventDefault();
+        abortController?.abort();
+    });
+
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
@@ -167,7 +176,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!apiToken || !subcontas) return;
 
-        btnRun.disabled = true;
+        isRunning = true;
+        abortController = new AbortController();
+        btnRunLabel.textContent = "Cancelar operação";
+        btnRun.classList.remove("bg-brand-600", "hover:bg-brand-700");
+        btnRun.classList.add("bg-rose-600", "hover:bg-rose-700");
         btnDownloadReport.classList.add("hidden");
         lastReportBase64 = null;
         logConsole.innerHTML = "";
@@ -181,6 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ api_token: apiToken, subcontas }),
+                signal: abortController.signal,
             });
 
             if (!response.ok) {
@@ -217,10 +231,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
         } catch (err) {
-            appendLog(`[ERRO] ${err.message}`, "error");
-            setStatus("error", "Erro na requisição");
+            if (abortController?.signal.aborted || err.name === "AbortError") {
+                appendLog("Operação cancelada pelo usuário.", "log");
+                setStatus("idle", "Operação cancelada");
+            } else {
+                appendLog(`[ERRO] ${err.message}`, "error");
+                setStatus("error", "Erro na requisição");
+            }
         } finally {
-            btnRun.disabled = false;
+            isRunning = false;
+            abortController = null;
+            btnRunLabel.textContent = "Executar Auditoria";
+            btnRun.classList.remove("bg-rose-600", "hover:bg-rose-700");
+            btnRun.classList.add("bg-brand-600", "hover:bg-brand-700");
         }
     });
 });

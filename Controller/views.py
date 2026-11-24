@@ -156,8 +156,15 @@ def execute_auditoria():
     service = CanvasAuditoriaService(api_token=api_token)
     stream_generator = service.auditar_cursos_stream(subcontas_raw=subcontas)
 
+    def encode_stream():
+        for chunk in stream_generator:
+            if isinstance(chunk, str):
+                yield chunk.encode("utf-8")
+            else:
+                yield chunk
+
     response = Response(
-        stream_with_context(stream_generator),
+        stream_with_context(encode_stream()),
         mimetype="text/event-stream",
         headers=STREAM_HEADERS,
     )
