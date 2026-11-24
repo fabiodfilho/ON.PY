@@ -145,10 +145,12 @@ def render_auditoria_view():
 @shortcut_auditoria_bp.route("/api/auditoria/execute", methods=["POST"])
 @shortcut_auditoria_bp.route("/api/shortcuts/auditoria/execute", methods=["POST"])
 def execute_auditoria():
-    payload = request.get_json() or {}
+    payload = {}
+    if request.is_json:
+        payload = request.get_json(silent=True) or {}
 
-    api_token = payload.get("api_token", "").strip()
-    subcontas = payload.get("subcontas", "").strip()
+    api_token = (payload.get("api_token") or request.form.get("api_token") or "").strip()
+    subcontas = (payload.get("subcontas") or request.form.get("subcontas") or "").strip()
 
     if not api_token or not subcontas:
         return jsonify({"error": "Informe o Token de API e pelo menos uma subconta."}), 400
@@ -169,4 +171,5 @@ def execute_auditoria():
         headers=STREAM_HEADERS,
     )
     response.headers["Content-Encoding"] = "identity"
+    response.headers["X-Content-Type-Options"] = "nosniff"
     return response

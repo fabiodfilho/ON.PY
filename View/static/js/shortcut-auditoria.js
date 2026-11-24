@@ -86,56 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
         statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full ${colors[state]}"></span> ${text}`;
     }
 
-    async function createContentReader(body) {
-        const originalReader = body.getReader();
-        const firstChunk = await originalReader.read();
-
-        if (firstChunk.done) {
-            return {
-                read: async () => ({ done: true, value: undefined }),
-            };
-        }
-
-        const bytes = firstChunk.value;
-        const isGzip = bytes.length >= 2 && bytes[0] === 0x1f && bytes[1] === 0x8b;
-
-        if (isGzip) {
-            if (!("DecompressionStream" in window)) {
-                throw new Error("Resposta comprimida pelo proxy, mas este navegador não suporta descompressão.");
-            }
-
-            const gzipStream = new ReadableStream({
-                start(controller) {
-                    controller.enqueue(bytes);
-                },
-                async pull(controller) {
-                    const chunk = await originalReader.read();
-                    if (chunk.done) {
-                        controller.close();
-                    } else {
-                        controller.enqueue(chunk.value);
-                    }
-                },
-            });
-
-            return gzipStream
-                .pipeThrough(new DecompressionStream("gzip"))
-                .getReader();
-        }
-
-        let pendingChunk = firstChunk;
-        return {
-            read: async () => {
-                if (pendingChunk) {
-                    const chunk = pendingChunk;
-                    pendingChunk = null;
-                    return chunk;
-                }
-                return originalReader.read();
-            },
-        };
-    }
-
     function downloadExcel(base64Data, filename) {
         const byteCharacters = atob(base64Data);
         const byteNumbers = new Array(byteCharacters.length);
@@ -240,10 +190,16 @@ document.addEventListener("DOMContentLoaded", () => {
         setStatus("running", "Executando auditoria...");
 
         try {
+            const formData = new FormData();
+            formData.append("api_token", apiToken);
+            formData.append("subcontas", subcontas);
+
             const response = await fetch("/api/shortcuts/auditoria/execute", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ api_token: apiToken, subcontas }),
+                headers: {
+                    "Accept": "text/event-stream",
+                },
+                body: formData,
                 signal: abortController.signal,
                 cache: "no-store",
             });
@@ -253,7 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 throw new Error(errData.error || `Erro HTTP ${response.status}`);
             }
 
-            const reader = await createContentReader(response.body);
+            const reader = response.body.getReader();
             const decoder = new TextDecoder("utf-8");
             let buffer = "";
 
